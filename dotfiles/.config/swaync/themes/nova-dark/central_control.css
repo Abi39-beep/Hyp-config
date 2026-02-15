@@ -211,7 +211,7 @@ progressbar {
 
   /* NOTE: Background need *opacity 1* otherwise will turn into the album art blurred  */
 .widget-mpris-player {
-    background-color: @background-sec;
+    background-color: @background;
     border-radius: 22px;
     padding: 6px 14px;
     margin: 6px;
@@ -250,7 +250,7 @@ picture.mpris-background {
 
 /* Volume */
 .widget-volume {
-  background: @background-sec;
+  background: @background;
   color: @background;
   padding: 4px;
   margin: 6px;

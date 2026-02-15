@@ -18,8 +18,8 @@
     "clock": {
         "interval": 60,
         "tooltip": true,
-        "format": "{:%H.%M}",
-        "tooltip-format": "{:%Y-%m-%d}",
+        "format": "{:%I:%M %p}",
+        "tooltip-format": "{:%Y-%m-%d}"
     },
     "hyprland/workspaces": {
         "format": "{name}",
@@ -70,7 +70,7 @@
         "interface": "enp1s0",
         "format": "{ifname}",
         "format-wifi": "{essid} ",
-        "format-ethernet": "{ipaddr}/{cidr} 󰊗",
+        "format-ethernet": "online ",
         "format-disconnected": "", //An empty format will hide the module.
         "tooltip-format": "{ifname} via {gwaddr} 󰊗",
         "tooltip-format-wifi": "{essid} ({signalStrength}%) ",

@@ -1,15 +1,11 @@
-/**
- *
- * Author : Aditya Shakya (adi1090x)
- * Github : @adi1090x
- * 
- * Colors
+ /**
+ * Everforest Dark Hard - Rofi Colors
  **/
 
 * {
-    background:     #323D43FF;
-    background-alt: #3C474DFF;
-    foreground:     #DAD1BEFF;
+    background:     #272E33FF;
+    background-alt: #2E383CFF;
+    foreground:     #D3C6AAFF;
     selected:       #7FBBB3FF;
     active:         #A7C080FF;
     urgent:         #E67E80FF;
