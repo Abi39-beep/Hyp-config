@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "jsxImportSource": "astal",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "allowJs": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "astal": ["/usr/local/share/astal/gjs"],
+      "astal/*": ["/usr/local/share/astal/gjs/*"],
+      "gi://*": ["/usr/local/share/astal/gjs/*"],
+    },
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "app.ts", "astal.d.ts"],
+}

@@ -1,0 +1,9 @@
+{
+  "name": "my-arch-bar",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "app.ts",
+  "dependencies": {
+    "astal": "file:/usr/local/share/astal/gjs"
+  }
+}
