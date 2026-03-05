@@ -31,8 +31,10 @@ by Stephan Raabe (2023)
 }
 
 window {
-    background: url("~/.cache/current_wallpaper");
-    background-size: cover;
+    background-color: alpha(
+        @bg1,
+        0.6
+    ); /* This uses @bg1 from your colors.css and makes it 60% transparent */
     font-size: 16pt;
 }
 
