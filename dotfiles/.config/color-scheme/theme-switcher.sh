@@ -32,6 +32,16 @@ echo "source = $THEME_DIR/$SELECTED_THEME/hyprlock/$SELECTED_THEME.conf" > "$CON
 # Foot
 echo "include=$THEME_DIR/$SELECTED_THEME/foot/$SELECTED_THEME.ini" > "$CONF_DIR/foot/color.ini"
 
+# Zen Browser
+ZEN_PROFILE_DIR="$HOME/.var/app/app.zen_browser.zen/.zen/ka68yl6j.Default (release)"
+ZEN_SOURCE="$THEME_DIR/$SELECTED_THEME/zen/$SELECTED_THEME.css"
+ZEN_TARGET="$ZEN_PROFILE_DIR/chrome/userChrome.css"
+
+mkdir -p "$ZEN_PROFILE_DIR/chrome"
+ln -sf "$ZEN_SOURCE" "$ZEN_TARGET"
+
+# Wlogout
+echo "@import \"$THEME_DIR/$SELECTED_THEME/wlogout/$SELECTED_THEME.css\";" >  "$CONF_DIR/wlogout/colors.css"
 
 # 3. Reload Applications
 # Waybar reload (Restarts if it was closed)
@@ -42,12 +52,17 @@ else
 fi
 
 # Reload SwayNC
-swaync-client -rs
+swaync-#client -rs
 
-# Reload Kitty
-killall -USR1 kitty
+# #Reload Kitty
+k#illall -USR1 kitty
 
 # Reload Hyprland
 hyprctl reload
 
 notify-send "Theme Switcher" "Applied $SELECTED_THEME theme"
+
+# Reload Zen Browser (Flatpak)
+#if flatpak ps | grep -q app.zen_browser.zen; then
+    #flatpak kill app.zen_browser.zen
+#fi

@@ -1,0 +1,67 @@
+/* =========================================================
+   EVERFOREST THEME FOR FIREFOX & ZEN BROWSER (FULL UI COLORS)
+   =========================================================
+   Matches Sainnhe's official Everforest Dark palette.
+*/
+
+:root {
+    /* -- Background Colors -- */
+    --lwt-accent-color: #232a2e !important; /* Window background (Darkest background) */
+    --toolbar-bgcolor: #2b3339 !important; /* Toolbar background (Main background) */
+    --lwt-frame: #232a2e !important;
+    --tab-selected-bgcolor: #323c41 !important; /* Active tab background */
+    --lwt-selected-tab-background-color: #323c41 !important;
+
+    /* -- Text & Foreground Colors -- */
+    --toolbar-color: #d3c6aa !important; /* Standard text (Warm cream) */
+    --lwt-text-color: #d3c6aa !important;
+    --tab-selected-textcolor: #d3c6aa !important;
+    --lwt-tab-text: #859289 !important; /* Unselected tab text (Muted grey-green) */
+
+    /* -- URL / Search Bar -- */
+    --toolbar-field-background-color: #232a2e !important;
+    --toolbar-field-color: #d3c6aa !important;
+    --toolbar-field-focus-background-color: #2b3339 !important;
+    --toolbar-field-focus-color: #d3c6aa !important;
+    --toolbar-field-border-color: #3a454a !important;
+    --toolbar-field-focus-border-color: #a7c080 !important; /* Everforest Green accent */
+
+    /* -- Context Menus, Popups & Dropdowns -- */
+    --arrowpanel-background: #2b3339 !important;
+    --arrowpanel-color: #d3c6aa !important;
+    --arrowpanel-border-color: #3a454a !important;
+    --popup-color: #d3c6aa !important;
+    --popup-border-color: #3a454a !important;
+    --menu-color: #d3c6aa !important;
+    --menu-background-color: #2b3339 !important;
+    --menu-border-color: #3a454a !important;
+
+    /* -- Hover & Active Button States -- */
+    --button-hover-bgcolor: #3a454a !important;
+    --button-active-bgcolor: #445055 !important;
+    --toolbarbutton-hover-background: #3a454a !important;
+    --toolbarbutton-active-background: #445055 !important;
+
+    /* -- Sidebar (Bookmarks, History, Zen vertical tabs) -- */
+    --lwt-sidebar-background-color: #232a2e !important;
+    --lwt-sidebar-text-color: #d3c6aa !important;
+    --sidebar-background-color: #232a2e !important;
+    --sidebar-text-color: #d3c6aa !important;
+
+    /* -- Accents -- */
+    --tab-line-color: #a7c080 !important; /* Active tab indicator (Everforest Green) */
+}
+
+/* Force context menu background colors system-wide inside the browser */
+menupopup,
+panel {
+    --panel-background: #2b3339 !important;
+    --panel-color: #d3c6aa !important;
+    --panel-border-color: #3a454a !important;
+}
+
+/* Highlight / Text Selection Color */
+::selection {
+    background-color: #445055 !important;
+    color: #d3c6aa !important;
+}

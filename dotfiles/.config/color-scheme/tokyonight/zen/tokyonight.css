@@ -1,0 +1,42 @@
+:root {
+    /* Backgrounds */
+    --zen-colors-bg0: #15161e;
+    --zen-colors-bg1: #1a1b26;
+    --zen-colors-bg2: #33467c;
+    --zen-colors-bg3: #414868;
+    --zen-colors-bg4: #565f89;
+
+    /* Foreground */
+    --zen-colors-fg: #c0caf5;
+
+    /* Accent colors */
+    --zen-colors-red: #f7768e;
+    --zen-colors-orange: #ff9e64;
+    --zen-colors-yellow: #e0af68;
+    --zen-colors-green: #9ece6a;
+    --zen-colors-aqua: #7dcfff;
+    --zen-colors-blue: #7aa2f7;
+    --zen-colors-purple: #bb9af7;
+
+    /* Greys */
+    --zen-colors-grey0: #414868;
+    --zen-colors-grey1: #565f89;
+    --zen-colors-grey2: #a9b1d6;
+
+    /* Core Zen UI mapping */
+    --toolbar-bgcolor: var(--zen-colors-bg0) !important;
+    --sidebar-bg-color: var(--zen-colors-bg1) !important;
+    --lwt-accent-color: var(--zen-colors-bg0) !important;
+    --lwt-text-color: var(--zen-colors-fg) !important;
+
+    --tab-selected-bgcolor: var(--zen-colors-bg3) !important;
+    --tab-selected-textcolor: var(--zen-colors-fg) !important;
+
+    --tab-hover-background-color: var(--zen-colors-bg2) !important;
+
+    --toolbarbutton-icon-fill: var(--zen-colors-fg) !important;
+    --toolbar-color: var(--zen-colors-fg) !important;
+
+    --urlbar-background-color: var(--zen-colors-bg2) !important;
+    --urlbar-color: var(--zen-colors-fg) !important;
+}
