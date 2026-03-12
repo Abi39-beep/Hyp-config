@@ -1,0 +1,68 @@
+/* =========================================================
+   GRUVBOX DARK THEME FOR FIREFOX & ZEN BROWSER (FULL UI COLORS)
+   =========================================================
+   This method safely themes the full UI (tabs, context menus,
+   URL bar, sidebars) without breaking Zen's unique layout.
+*/
+
+:root {
+    /* -- Background Colors -- */
+    --lwt-accent-color: #3c3836 !important; /* Window background (Gruvbox darker) */
+    --toolbar-bgcolor: #282828 !important; /* Toolbar background (Gruvbox main) */
+    --lwt-frame: #3c3836 !important;
+    --tab-selected-bgcolor: #282828 !important;
+    --lwt-selected-tab-background-color: #282828 !important;
+
+    /* -- Text & Foreground Colors -- */
+    --toolbar-color: #ebdbb2 !important; /* Standard text */
+    --lwt-text-color: #ebdbb2 !important;
+    --tab-selected-textcolor: #ebdbb2 !important;
+    --lwt-tab-text: #928374 !important; /* Unselected tab text */
+
+    /* -- URL / Search Bar -- */
+    --toolbar-field-background-color: #1d2021 !important;
+    --toolbar-field-color: #ebdbb2 !important;
+    --toolbar-field-focus-background-color: #282828 !important;
+    --toolbar-field-focus-color: #ebdbb2 !important;
+    --toolbar-field-border-color: #504945 !important;
+    --toolbar-field-focus-border-color: #458588 !important; /* Gruvbox blue accent */
+
+    /* -- Context Menus, Popups & Dropdowns -- */
+    --arrowpanel-background: #282828 !important;
+    --arrowpanel-color: #ebdbb2 !important;
+    --arrowpanel-border-color: #504945 !important;
+    --popup-color: #ebdbb2 !important;
+    --popup-border-color: #504945 !important;
+    --menu-color: #ebdbb2 !important;
+    --menu-background-color: #282828 !important;
+    --menu-border-color: #504945 !important;
+
+    /* -- Hover & Active Button States -- */
+    --button-hover-bgcolor: #504945 !important;
+    --button-active-bgcolor: #665c54 !important;
+    --toolbarbutton-hover-background: #504945 !important;
+    --toolbarbutton-active-background: #665c54 !important;
+
+    /* -- Sidebar (Bookmarks, History, Zen vertical tabs) -- */
+    --lwt-sidebar-background-color: #3c3836 !important;
+    --lwt-sidebar-text-color: #ebdbb2 !important;
+    --sidebar-background-color: #3c3836 !important;
+    --sidebar-text-color: #ebdbb2 !important;
+
+    /* -- Accents -- */
+    --tab-line-color: #458588 !important; /* Active tab indicator */
+}
+
+/* Force context menu background colors system-wide inside the browser */
+menupopup,
+panel {
+    --panel-background: #282828 !important;
+    --panel-color: #ebdbb2 !important;
+    --panel-border-color: #504945 !important;
+}
+
+/* Highlight / Text Selection Color */
+::selection {
+    background-color: #665c54 !important;
+    color: #ebdbb2 !important;
+}
