@@ -21,10 +21,10 @@ echo "@import \"$THEME_DIR/$SELECTED_THEME/rofi/$SELECTED_THEME.rasi\"" > "$CONF
 echo "include $THEME_DIR/$SELECTED_THEME/kitty/$SELECTED_THEME.conf" > "$CONF_DIR/kitty/color.conf"
 
 # Waybar
-echo "@import \"$THEME_DIR/$SELECTED_THEME/waybar/$SELECTED_THEME.css\";" > "$CONF_DIR/waybar/color.css"
+#echo "@import \"$THEME_DIR/$SELECTED_THEME/waybar/$SELECTED_THEME.css\";" > "$CONF_DIR/waybar/color.css"
 
 # SwayNC
-echo "@import \"$THEME_DIR/$SELECTED_THEME/swaync/$SELECTED_THEME.css\";" > "$CONF_DIR/swaync/color.css"
+#echo "@import \"$THEME_DIR/$SELECTED_THEME/swaync/$SELECTED_THEME.css\";" > "$CONF_DIR/swaync/color.css"
 
 # Hyprlock
 echo "source = $THEME_DIR/$SELECTED_THEME/hyprlock/$SELECTED_THEME.conf" > "$CONF_DIR/hypr/color.conf"
@@ -32,27 +32,31 @@ echo "source = $THEME_DIR/$SELECTED_THEME/hyprlock/$SELECTED_THEME.conf" > "$CON
 # Foot
 echo "include=$THEME_DIR/$SELECTED_THEME/foot/$SELECTED_THEME.ini" > "$CONF_DIR/foot/color.ini"
 
-# Zen Browser
-ZEN_PROFILE_DIR="$HOME/.var/app/app.zen_browser.zen/.zen/ka68yl6j.Default (release)"
-ZEN_SOURCE="$THEME_DIR/$SELECTED_THEME/zen/$SELECTED_THEME.css"
-ZEN_TARGET="$ZEN_PROFILE_DIR/chrome/userChrome.css"
+# Neovim
+# Copies the color.lua from the chosen theme into your nvim lua folder
+cp "$THEME_DIR/$SELECTED_THEME/nvim/color.lua" "$HOME/.config/nvim/lua/color.lua"
 
-mkdir -p "$ZEN_PROFILE_DIR/chrome"
-ln -sf "$ZEN_SOURCE" "$ZEN_TARGET"
+# Zen Browser
+#ZEN_PROFILE_DIR="$HOME/.var/app/app.zen_browser.zen/.zen/ka68yl6j.Default (release)"
+#ZEN_SOURCE="$THEME_DIR/$SELECTED_THEME/zen/$SELECTED_THEME.css"
+#ZEN_TARGET="$ZEN_PROFILE_DIR/chrome/userChrome.css"
+
+#mkdir -p "$ZEN_PROFILE_DIR/chrome"
+#ln -sf "$ZEN_SOURCE" "$ZEN_TARGET"
 
 # Wlogout
-echo "@import \"$THEME_DIR/$SELECTED_THEME/wlogout/$SELECTED_THEME.css\";" >  "$CONF_DIR/wlogout/colors.css"
+#echo "@import \"$THEME_DIR/$SELECTED_THEME/wlogout/$SELECTED_THEME.css\";" >  "$CONF_DIR/wlogout/colors.css"
 
 # 3. Reload Applications
 # Waybar reload (Restarts if it was closed)
-if pgrep -x "waybar" > /dev/null; then
-    killall -SIGUSR2 waybar
-else
-    waybar &
-fi
+#if pgrep -x "waybar" > /dev/null; then
+ #   killall -SIGUSR2 waybar
+#else
+ #   waybar &
+#fi
 
 # Reload SwayNC
-swaync-#client -rs
+#swaync-#client -rs
 
 # #Reload Kitty
 k#illall -USR1 kitty
@@ -62,7 +66,4 @@ hyprctl reload
 
 notify-send "Theme Switcher" "Applied $SELECTED_THEME theme"
 
-# Reload Zen Browser (Flatpak)
-#if flatpak ps | grep -q app.zen_browser.zen; then
-    #flatpak kill app.zen_browser.zen
-#fi
+
