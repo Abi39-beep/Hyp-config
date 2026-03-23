@@ -4,7 +4,7 @@ require("keymaps")
 
 require("plugins.lazy")
 
-require("statusline")
+--require("statusline")
 
 vim.opt.spell = true
 vim.opt.spelllang = "en"

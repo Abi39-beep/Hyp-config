@@ -17,4 +17,5 @@ require("lazy").setup({
     require("plugins.telescope"),
     require("plugins.gitsigns"),
     require("plugins.lazygit"),
+    require("plugins.lualine"),
 })
