@@ -21,13 +21,19 @@ set(0, "DiagnosticWarn", { fg = "#ff9e3b" })
 set(0, "DiagnosticInfo", { fg = "#7e9cd8" })
 set(0, "DiagnosticHint", { fg = "#7aa89f" })
 
--- tree
-set(0, "NvimTreeNormal", { bg = "#1f1f28" })
-set(0, "NvimTreeFolderName", { fg = "#7e9cd8" })
+-- neo-tree (Replaces NvimTree)
+set(0, "NeoTreeNormal", { bg = "#1f1f28" })
+set(0, "NeoTreeNormalNC", { bg = "#1f1f28" })
+set(0, "NeoTreeDirectoryName", { fg = "#7e9cd8" })
+set(0, "NeoTreeRootName", { fg = "#957fb8", bold = true }) -- Kanagawa Wave purple for the root
+set(0, "NeoTreeGitAdded", { fg = "#98bb6c" })
+set(0, "NeoTreeGitModified", { fg = "#e6c384" })
+set(0, "NeoTreeGitDeleted", { fg = "#e82424" })
 
--- telescope
-set(0, "TelescopeBorder", { fg = "#54546d" })
-set(0, "TelescopeSelection", { bg = "#2d4f67" })
+-- fzf-lua (Replaces Telescope)
+set(0, "FzfLuaBorder", { fg = "#54546d" })
+set(0, "FzfLuaCursorLine", { bg = "#2d4f67" })
+set(0, "FzfLuaNormal", { bg = "#1f1f28" })
 
 -- git signs
 set(0, "GitSignsAdd", { fg = "#98bb6c" })

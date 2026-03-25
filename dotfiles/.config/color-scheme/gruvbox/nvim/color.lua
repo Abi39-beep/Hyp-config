@@ -21,13 +21,19 @@ set(0, "DiagnosticWarn", { fg = "#fabd2f" })
 set(0, "DiagnosticInfo", { fg = "#83a598" })
 set(0, "DiagnosticHint", { fg = "#8ec07c" })
 
--- tree
-set(0, "NvimTreeNormal", { bg = "#282828" })
-set(0, "NvimTreeFolderName", { fg = "#83a598" })
+-- neo-tree (Replaced NvimTree)
+set(0, "NeoTreeNormal", { bg = "#282828" })
+set(0, "NeoTreeNormalNC", { bg = "#282828" })
+set(0, "NeoTreeDirectoryName", { fg = "#83a598" })
+set(0, "NeoTreeRootName", { fg = "#fb4934", bold = true })
+set(0, "NeoTreeGitAdded", { fg = "#b8bb26" })
+set(0, "NeoTreeGitModified", { fg = "#fabd2f" })
+set(0, "NeoTreeGitDeleted", { fg = "#fb4934" })
 
--- telescope
-set(0, "TelescopeBorder", { fg = "#504945" })
-set(0, "TelescopeSelection", { bg = "#3c3836" })
+-- fzf-lua (Replaced Telescope)
+set(0, "FzfLuaBorder", { fg = "#504945" })
+set(0, "FzfLuaCursorLine", { bg = "#3c3836" })
+set(0, "FzfLuaNormal", { bg = "#282828" })
 
 -- git signs
 set(0, "GitSignsAdd", { fg = "#b8bb26" })

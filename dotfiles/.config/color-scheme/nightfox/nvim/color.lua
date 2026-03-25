@@ -21,13 +21,19 @@ set(0, "DiagnosticWarn", { fg = "#dbc074" })
 set(0, "DiagnosticInfo", { fg = "#719cd6" })
 set(0, "DiagnosticHint", { fg = "#63cdcf" })
 
--- tree
-set(0, "NvimTreeNormal", { bg = "#192330" })
-set(0, "NvimTreeFolderName", { fg = "#719cd6" })
+-- neo-tree (Replaces NvimTree)
+set(0, "NeoTreeNormal", { bg = "#192330" })
+set(0, "NeoTreeNormalNC", { bg = "#192330" })
+set(0, "NeoTreeDirectoryName", { fg = "#719cd6" })
+set(0, "NeoTreeRootName", { fg = "#9d79d6", bold = true }) -- Nightfox purple for the root
+set(0, "NeoTreeGitAdded", { fg = "#81b29a" })
+set(0, "NeoTreeGitModified", { fg = "#dbc074" })
+set(0, "NeoTreeGitDeleted", { fg = "#c94f6d" })
 
--- telescope
-set(0, "TelescopeBorder", { fg = "#393b44" })
-set(0, "TelescopeSelection", { bg = "#2b3b51" })
+-- fzf-lua (Replaces Telescope)
+set(0, "FzfLuaBorder", { fg = "#393b44" })
+set(0, "FzfLuaCursorLine", { bg = "#2b3b51" })
+set(0, "FzfLuaNormal", { bg = "#192330" })
 
 -- git signs
 set(0, "GitSignsAdd", { fg = "#81b29a" })

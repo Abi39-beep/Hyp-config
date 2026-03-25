@@ -21,13 +21,19 @@ set(0, "DiagnosticWarn", { fg = "#e0af68" })
 set(0, "DiagnosticInfo", { fg = "#7aa2f7" })
 set(0, "DiagnosticHint", { fg = "#1abc9c" })
 
--- tree
-set(0, "NvimTreeNormal", { bg = "#16161e" })
-set(0, "NvimTreeFolderName", { fg = "#7aa2f7" })
+-- neo-tree (Replaces NvimTree)
+set(0, "NeoTreeNormal", { bg = "#16161e" }) -- TokyoNight's slightly darker sidebar
+set(0, "NeoTreeNormalNC", { bg = "#16161e" })
+set(0, "NeoTreeDirectoryName", { fg = "#7aa2f7" })
+set(0, "NeoTreeRootName", { fg = "#bb9af7", bold = true }) -- TokyoNight purple for root
+set(0, "NeoTreeGitAdded", { fg = "#9ece6a" })
+set(0, "NeoTreeGitModified", { fg = "#e0af68" })
+set(0, "NeoTreeGitDeleted", { fg = "#f7768e" })
 
--- telescope
-set(0, "TelescopeBorder", { fg = "#292e42" })
-set(0, "TelescopeSelection", { bg = "#292e42" })
+-- fzf-lua (Replaces Telescope)
+set(0, "FzfLuaBorder", { fg = "#292e42" })
+set(0, "FzfLuaCursorLine", { bg = "#292e42" })
+set(0, "FzfLuaNormal", { bg = "#1a1b26" })
 
 -- git signs
 set(0, "GitSignsAdd", { fg = "#9ece6a" })
