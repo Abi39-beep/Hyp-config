@@ -16,8 +16,11 @@ require("lazy").setup({
     --require("plugins.tree"),
     --require("plugins.telescope"),
     require("plugins.neo-tree"),
-    require("plugins.fzf-lua"),
     require("plugins.gitsigns"),
     require("plugins.lazygit"),
     require("plugins.lualine"),
+    require("plugins.fzf-lua"),
+    require("plugins.autocompletion"),
+    require("plugins.lsp"),
+    require("plugins.formatting"),
 })
