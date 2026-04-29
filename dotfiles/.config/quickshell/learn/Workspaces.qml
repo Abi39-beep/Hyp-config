@@ -5,19 +5,21 @@ Row {
     spacing: 8
     
     Repeater {
-        model: [1, 2, 3, 4, 5] // Your 5 persistent workspaces
+        model:[1, 2, 3, 4, 5] // Your 5 persistent workspaces
         
         Rectangle {
             required property int modelData
-            width: 20; height: 20; radius: 5
+            width: 30; height: 30; radius: 15
             
-            // LOGIC:
+            // Get the live workspace object
+            property var ws: Hyprland.workspaces.values.find(w => w.id === modelData)
+            
             // 1. Is this the one I'm currently on?
             readonly property bool isFocused: Hyprland.focusedWorkspace?.id === modelData
             
-            // 2. Does this workspace have windows in it? 
-            // We check if it exists in the active workspaces list.
-            readonly property bool isOccupied: Hyprland.workspaces.values.some(ws => ws.id === modelData)
+            // 2. Does it have windows?
+            // "toplevels" actively tracks the windows (toplevels). We check if the array length > 0.
+            readonly property bool isOccupied: ws ? ws.toplevels.values.length > 0 : false
 
             // Dynamic Styling
             color: isFocused ? Colors.green : (isOccupied ? Colors.bg3 : Colors.bg1)
@@ -27,9 +29,9 @@ Row {
             Text {
                 anchors.centerIn: parent
                 text: modelData
-                font.pixelSize: 13
-                font.bold: isFocused
-                // Dark text on bright green, light text otherwise
+                font.pixelSize: 15
+                font.family: "JetBrainsMono Nerd Font"
+                font.bold: parent.isFocused
                 color: parent.isFocused ? Colors.bg0 : (parent.isOccupied ? Colors.fg : Colors.grey1)
             }
 

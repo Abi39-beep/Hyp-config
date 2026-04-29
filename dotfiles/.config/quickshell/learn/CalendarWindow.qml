@@ -2,18 +2,40 @@ import QtQuick
 import Quickshell
 import "."
 
-Window {
+PopupWindow {
     id: calendarRoot
     visible: false
     
-    // Simple positioning: 10 pixels from the left, 50 from the top
-    x: 10
-    y: 50
     width: 250
-    height: 300
+    height: 250 // Increased by 10 to make room for the gap
+    
+    color: "transparent"
+    grabFocus: true 
+
+    // FIX: Force it to grab the keyboard when it opens
+    onVisibleChanged: {
+        if (visible) {
+            bgRect.forceActiveFocus()
+        }
+    }
 
     Rectangle {
+        id: bgRect
         anchors.fill: parent
+        
+        // FIX: This pushes the rectangle down, creating a 10px gap!
+        anchors.topMargin: 10 
+        
+        // FIX: Listen for the Escape key and focus loss (clicking outside)
+        focus: true
+        Keys.onEscapePressed: calendarRoot.visible = false
+        onActiveFocusChanged: {
+            // If it loses focus (you clicked another window), close it
+            if (!activeFocus) {
+                calendarRoot.visible = false
+            }
+        }
+
         color: Colors.bg0 
         border.color: Colors.bg2
         border.width: 1

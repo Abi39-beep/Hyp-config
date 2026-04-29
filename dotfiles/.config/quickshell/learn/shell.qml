@@ -3,14 +3,11 @@ import Quickshell
 import "." 
 
 ShellRoot {
-    // The ID 'calendarWindow' must be lowercase
-    CalendarWindow { id: calendarWindow }
-
     PanelWindow {
         anchors.top: true
         anchors.left: true
         anchors.right: true
-        height: 28 
+        height: 38 
 
         Rectangle {
             anchors.fill: parent
@@ -33,7 +30,12 @@ ShellRoot {
                 anchors.right: parent.right
                 anchors.rightMargin: 5
                 anchors.verticalCenter: parent.verticalCenter
-                Text { text: "  CPU"; color: Colors.blue; font.pixelSize: 14 }
+                spacing: 8
+
+                VolumeWidget {}
+                WifiWidget {}
+                BluetoothWidget {}
+                Battery {}
             }
         }
     }

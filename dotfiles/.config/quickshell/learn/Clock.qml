@@ -6,7 +6,7 @@ Rectangle {
     id: clockPill
     // Automatically adjust width based on the content
     width: clockRow.width + 15
-    height: 20
+    height: 30
     radius: 8
     color: Colors.bg1
     border.color: Colors.bg2
@@ -22,7 +22,7 @@ Rectangle {
             id: timeDisplay
             text: Qt.formatDateTime(new Date(), "hh:mm AP")
             color: Colors.fg
-            font.pixelSize: 13
+            font.pixelSize: 15
             font.family: "JetBrainsMono Nerd Font"
             font.bold: true
         }
@@ -39,7 +39,7 @@ Rectangle {
             id: dateDisplay
             text: Qt.formatDateTime(new Date(), "ddd, MMM d")
             color: Colors.blue
-            font.pixelSize: 12
+            font.pixelSize: 13
             font.family: "JetBrainsMono Nerd Font"
         }
     }
@@ -57,7 +57,15 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        // This will open your CalendarWindow
-        onClicked: calendarWindow.visible = !calendarWindow.visible
+        // Open the popup we defined below
+        onClicked: calendarPopup.visible = !calendarPopup.visible
+    }
+
+    // --- POPUP MOVED HERE ---
+    // Because it is instantiated here, we can anchor it directly to the clock!
+    CalendarWindow {
+        id: calendarPopup
+        anchor.item: clockPill
+        anchor.edges: Edges.Bottom | Edges.Left
     }
 }
