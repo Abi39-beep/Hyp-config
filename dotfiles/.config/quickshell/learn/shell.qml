@@ -38,6 +38,7 @@ ShellRoot {
                 WifiWidget {}
                 BluetoothWidget {}
                 Battery {}
+                PowerWidget {}
             }
         }
         OsdWindow {}
