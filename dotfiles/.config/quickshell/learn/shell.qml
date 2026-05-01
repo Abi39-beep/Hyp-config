@@ -15,7 +15,7 @@ ShellRoot {
 
             Row {
                 anchors.left: parent.left
-                anchors.leftMargin: 3
+                anchors.leftMargin: 5
                 anchors.verticalCenter: parent.verticalCenter
                 Clock {} 
             }
@@ -32,11 +32,14 @@ ShellRoot {
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 8
 
+                NotificationWidget {}
+                ClipboardWidget {}
                 VolumeWidget {}
                 WifiWidget {}
                 BluetoothWidget {}
                 Battery {}
             }
         }
+        OsdWindow {}
     }
 }

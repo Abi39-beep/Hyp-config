@@ -1,4 +1,4 @@
 #!/bin/bash
 
-killall -9 quickshell -c learn
+killall -9 quickshell 
 quickshell -c learn &
