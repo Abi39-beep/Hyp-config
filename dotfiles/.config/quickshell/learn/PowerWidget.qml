@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland 
 import "."
 
 Rectangle {
@@ -10,6 +11,20 @@ Rectangle {
     color: Colors.bg1 
     border.width: 1
     border.color: Colors.bg2
+
+    // This listens for the keyboard shortcut from Hyprland!
+    GlobalShortcut {
+        name: "powermenu" 
+        onPressed: {
+            if (!powerMenuWindow.visible) {
+                powerMenuWindow.visible = true
+                bgDimmer.forceActiveFocus() 
+                powerList.forceActiveFocus() 
+            } else {
+                powerMenuWindow.closeMenu()
+            }
+        }
+    }
 
     Text {
         anchors.centerIn: parent
@@ -24,8 +39,8 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             powerMenuWindow.visible = true
-            bgDimmer.forceActiveFocus() // Focus the background first to catch rogue keys
-            powerList.forceActiveFocus() // Focus the list for Arrow key navigation
+            bgDimmer.forceActiveFocus()
+            powerList.forceActiveFocus()
         }
     }
 
@@ -43,8 +58,6 @@ Rectangle {
         exclusionMode: ExclusionMode.Ignore
         
         WlrLayershell.layer: WlrLayer.Overlay 
-        
-        // FIXED: Tell Wayland to send Keyboard events (like 'Esc') to this Window!
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
         
         visible: false
@@ -88,7 +101,6 @@ Rectangle {
             }
         }
         
-        // FIXED: Using your exact script path with the $HOME variable
         property var actionModel:[
             { name: "Lock", icon: "", cmd: "$HOME/.config/hypr/hyprlock.sh" },
             { name: "Sleep", icon: "󰤄", cmd: "systemctl suspend" },
@@ -101,11 +113,9 @@ Rectangle {
             anchors.fill: parent
             color: "#CC000000" 
             
-            // Catch the Esc key globally when the menu is open
             focus: true
             Keys.onEscapePressed: powerMenuWindow.closeMenu()
 
-            // FIXED: Clicking anywhere in this dark background space will close the menu
             MouseArea {
                 anchors.fill: parent
                 onClicked: powerMenuWindow.closeMenu()
