@@ -15,12 +15,15 @@ Rectangle {
     border.width: 1
     border.color: Colors.bg2
 
+    Behavior on color { ColorAnimation { duration: 200 } }
+
     Text {
         anchors.centerIn: parent
         text: "󰕮" 
         font.pixelSize: 15
         font.family: "JetBrainsMono Nerd Font"
         color: dashPopup.visible ? Colors.bg0 : Colors.fg 
+        Behavior on color { ColorAnimation { duration: 200 } }
     }
 
     MouseArea {
@@ -52,15 +55,17 @@ Rectangle {
     }
 
     // ==========================================
-    // 1. DATA & LOGIC
+    // 1. DATA & LOGIC 
     // ==========================================
     property bool showClipboard: false
 
+    // Audio
     PwObjectTracker { objects: Pipewire.defaultAudioSink ? [Pipewire.defaultAudioSink] :[] }
     property var audio: Pipewire.defaultAudioSink?.audio
     property int volPercent: audio ? Math.round(audio.volume * 100) : 0
     property bool isMuted: audio ? audio.muted : false
 
+    // Brightness
     property int briPercent: 50 
     Timer {
         interval: 2000; running: true; repeat: true
@@ -78,14 +83,40 @@ Rectangle {
         }
     }
 
+    // --- SYSTEM STATS (CPU & MEMORY) ---
+    property string cpuUsage: "0.0%"
+    property string memUsage: "0.0 GB"
+
+    Timer {
+        id: statTimer
+        interval: 2000; running: true; repeat: true
+        onTriggered: { cpuPoll.running = true; memPoll.running = true; }
+        Component.onCompleted: { cpuPoll.running = true; memPoll.running = true; }
+    }
+
+    Process {
+        id: cpuPoll
+        command:["bash", "-c", "top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}'"]
+        stdout: SplitParser { onRead: data => { if (data.trim() !== "") dashWidget.cpuUsage = parseFloat(data).toFixed(1) + "%"; } }
+    }
+
+    Process {
+        id: memPoll
+        command:["bash", "-c", "free -m | awk '/Mem:/ {printf \"%.1f\", $3/1024}'"]
+        stdout: SplitParser { onRead: data => { if (data.trim() !== "") dashWidget.memUsage = data + " GB"; } }
+    }
+
+    // Power Execution
     Process { id: executor; property string currentCommand: ""; command:["bash", "-c", currentCommand] }
     property var actionModel:[
-        { name: "Lock", icon: "", cmd: "$HOME/.config/hypr/hyprlock.sh" },
-        { name: "Sleep", icon: "󰤄", cmd: "systemctl suspend" },
-        { name: "Logout", icon: "󰍃", cmd: "hyprctl dispatch exit" },
-        { name: "Power", icon: "", cmd: "systemctl poweroff" }
+        { name: "Lock", icon: "", cmd: "$HOME/.config/hypr/hyprlock.sh", color: Colors.blue },
+        { name: "Sleep", icon: "󰤄", cmd: "systemctl suspend", color: Colors.blue },
+        { name: "Logout", icon: "󰍃", cmd: "hyprctl dispatch exit", color: Colors.orange },
+        { name: "Reboot", icon: "", cmd: "systemctl reboot", color: Colors.orange },
+        { name: "Power", icon: "", cmd: "systemctl poweroff", color: Colors.red }
     ]
 
+    // Clipboard
     Timer {
         id: resetTimer
         interval: 10
@@ -112,7 +143,7 @@ Rectangle {
                 if (sep !== -1) {
                     let id = lines[i].substring(0, sep);
                     let text = lines[i].substring(sep + 1);
-                    clipModel.append({ "clipId": id, "clipText": text });
+                    clipModel.append({ "clipId": id, "clipText": text, "justCopied": false });
                     count++;
                     if (count >= 30) break; 
                 }
@@ -120,6 +151,7 @@ Rectangle {
         }
     }
 
+    // Notifications
     NotificationServer {
         id: server
         onNotification: (notification) => { notification.tracked = true; }
@@ -138,6 +170,7 @@ Rectangle {
             color: Colors.bg0
             border.color: (modelData && modelData.urgency === 2) ? Colors.red : Colors.blue
             border.width: 1; radius: 12
+            clip: true
 
             Timer { interval: 5000; running: cardRoot.isOsd && modelData && modelData.urgency !== 2 && !cardRoot.osdExpired; onTriggered: cardRoot.osdExpired = true }
 
@@ -152,14 +185,19 @@ Rectangle {
                         Text { text: (modelData && modelData.appName) ? modelData.appName : "System"; color: Colors.blue; font.pixelSize: 11; font.bold: true }
                     }
                     Text { text: (modelData && modelData.summary) ? modelData.summary : ""; color: Colors.fg; font.pixelSize: 13; font.bold: true; width: parent.width; wrapMode: Text.Wrap }
-                    Text { text: ((modelData && modelData.body) ? modelData.body : "").replace(/<[^>]*>?/gm, ''); color: Colors.grey1; font.pixelSize: 12; width: parent.width; wrapMode: Text.Wrap; visible: text.length > 0 }
+                    Text { text: ((modelData && modelData.body) ? modelData.body : "").replace(/<[^>]*>?/gm, ''); color: Colors.grey1; font.pixelSize: 12; width: parent.width; wrapMode: Text.Wrap; visible: text.length > 0; maximumLineCount: cardRoot.isOsd ? 3 : 10; elide: Text.ElideRight }
                 }
             }
 
             Rectangle {
                 anchors.right: parent.right; anchors.top: parent.top; anchors.margins: 12; width: 24; height: 24; radius: 4
                 color: closeMouse.containsMouse ? Colors.red : "transparent"
-                Text { anchors.centerIn: parent; text: "󰅖"; color: closeMouse.containsMouse ? Colors.bg0 : Colors.grey1; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font" }
+                Behavior on color { ColorAnimation { duration: 150 } }
+                Text { 
+                    anchors.centerIn: parent; text: "󰅖"; color: closeMouse.containsMouse ? Colors.bg0 : Colors.grey1; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"
+                    rotation: closeMouse.containsMouse ? 90 : 0
+                    Behavior on rotation { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
+                }
                 MouseArea {
                     id: closeMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                     onClicked: {
@@ -168,18 +206,24 @@ Rectangle {
                     }
                 }
             }
+
+            Rectangle {
+                id: timeoutBar
+                height: 3; width: cardRoot.isOsd ? parent.width : 0
+                color: (modelData && modelData.urgency === 2) ? Colors.red : Colors.blue
+                anchors.bottom: parent.bottom; anchors.left: parent.left
+                opacity: cardRoot.isOsd ? 1 : 0
+                PropertyAnimation on width { from: cardRoot.width; to: 0; duration: 5000; running: cardRoot.isOsd && modelData && modelData.urgency !== 2 }
+            }
         }
     }
 
     // ==========================================
-    // 2. DASHBOARD POPUP WINDOW (FIXED FOR FOCUS STEALING)
+    // 2. DASHBOARD POPUP WINDOW 
     // ==========================================
     PanelWindow {
         id: dashPopup
-        
-        // 1. Stretch window across entire screen
         anchors { top: true; bottom: true; left: true; right: true }
-        
         color: "transparent"
         exclusionMode: ExclusionMode.Ignore
         
@@ -189,28 +233,18 @@ Rectangle {
         
         onVisibleChanged: { if (visible) bgRect.forceActiveFocus() }
 
-        // 2. Invisible background that closes dashboard when clicked outside!
-        MouseArea {
-            anchors.fill: parent
-            onClicked: dashPopup.visible = false
-        }
+        MouseArea { anchors.fill: parent; onClicked: dashPopup.visible = false }
 
         Rectangle {
             id: bgRect
-            
-            // 3. Margin controls set relative to the full screen
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.topMargin: 45      // Drops down from the top
-            anchors.rightMargin: 15    // Stays away from the right edge
-            width: 380; height: 600 
+            anchors.top: parent.top; anchors.right: parent.right
+            anchors.topMargin: 45; anchors.rightMargin: 15    
+            width: 380; height: 665 // Reduced height back since media controller is removed
             
             color: Qt.alpha(Colors.bg0, 0.95); border.color: Colors.bg2; border.width: 1; radius: 16
             
             focus: true
             Keys.onEscapePressed: dashPopup.visible = false
-
-            // 4. Catch clicks inside the dashboard so they don't accidentally click the transparent background!
             MouseArea { anchors.fill: parent }
 
             Column {
@@ -222,11 +256,15 @@ Rectangle {
                     Repeater {
                         model: dashWidget.actionModel
                         Rectangle {
-                            width: (parent.width - 30) / 4; height: 60; radius: 10
+                            width: (parent.width - 40) / 5; height: 60; radius: 10
                             color: powerMouse.containsMouse ? Colors.bg2 : Colors.bg1; border.width: 1; border.color: Colors.bg2
+                            Behavior on color { ColorAnimation { duration: 150 } }
+                            scale: powerMouse.pressed ? 0.92 : 1.0
+                            Behavior on scale { NumberAnimation { duration: 100 } }
+
                             Column {
                                 anchors.centerIn: parent; spacing: 4
-                                Text { anchors.horizontalCenter: parent.horizontalCenter; text: modelData.icon; color: Colors.red; font.pixelSize: 18; font.family: "JetBrainsMono Nerd Font" }
+                                Text { anchors.horizontalCenter: parent.horizontalCenter; text: modelData.icon; color: modelData.color; font.pixelSize: 18; font.family: "JetBrainsMono Nerd Font" }
                                 Text { anchors.horizontalCenter: parent.horizontalCenter; text: modelData.name; color: Colors.fg; font.pixelSize: 10; font.bold: true }
                             }
                             MouseArea {
@@ -246,13 +284,56 @@ Rectangle {
 
                 Rectangle { width: parent.width; height: 1; color: Colors.bg2 }
 
+                // --- HARDWARE STATS (CPU & MEMORY) ---
+                Row {
+                    width: parent.width; height: 40; spacing: 10
+                    
+                    Rectangle {
+                        width: (parent.width - 10) / 2; height: parent.height; radius: 8
+                        color: Colors.bg1; border.width: 1; border.color: Colors.bg2
+                        Row {
+                            anchors.centerIn: parent; spacing: 10
+                            Text { text: "󰻠"; color: Colors.blue; font.pixelSize: 18; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter }
+                            Column {
+                                anchors.verticalCenter: parent.verticalCenter; spacing: 2
+                                Text { text: "CPU"; color: Colors.grey1; font.pixelSize: 10; font.bold: true }
+                                Text { text: dashWidget.cpuUsage; color: Colors.fg; font.pixelSize: 13; font.bold: true }
+                            }
+                        }
+                    }
+                    
+                    Rectangle {
+                        width: (parent.width - 10) / 2; height: parent.height; radius: 8
+                        color: Colors.bg1; border.width: 1; border.color: Colors.bg2
+                        Row {
+                            anchors.centerIn: parent; spacing: 10
+                            Text { text: "󰍛"; color: Colors.orange; font.pixelSize: 18; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter }
+                            Column {
+                                anchors.verticalCenter: parent.verticalCenter; spacing: 2
+                                Text { text: "Memory"; color: Colors.grey1; font.pixelSize: 10; font.bold: true }
+                                Text { text: dashWidget.memUsage; color: Colors.fg; font.pixelSize: 13; font.bold: true }
+                            }
+                        }
+                    }
+                }
+
+                Rectangle { width: parent.width; height: 1; color: Colors.bg2 }
+
                 // --- SLIDERS ---
                 Item {
                     width: parent.width; height: 45
                     Item {
                         width: parent.width; height: 20
                         Row { anchors.left: parent.left; spacing: 8
-                            Text { text: dashWidget.isMuted ? "󰝟" : "󰕾"; color: Colors.blue; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter }
+                            Text { 
+                                text: {
+                                    if (dashWidget.isMuted || dashWidget.volPercent === 0) return "󰝟";
+                                    if (dashWidget.volPercent < 33) return "󰕿";
+                                    if (dashWidget.volPercent < 66) return "󰖀";
+                                    return "󰕾";
+                                }
+                                color: Colors.blue; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter 
+                            }
                             Text { text: "Volume"; color: Colors.blue; font.pixelSize: 13; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter }
                         }
                         Text { anchors.right: parent.right; text: dashWidget.volPercent + "%"; color: Colors.blue; font.pixelSize: 13; font.family: "JetBrainsMono Nerd Font" }
@@ -260,9 +341,7 @@ Rectangle {
                     Slider {
                         id: volSlider
                         anchors.bottom: parent.bottom; width: parent.width; height: 24 
-                        from: 0; to: 100
-                        focusPolicy: Qt.NoFocus 
-                        
+                        from: 0; to: 100; focusPolicy: Qt.NoFocus 
                         value: dashWidget.volPercent
                         
                         onMoved: { if (dashWidget.audio) dashWidget.audio.volume = value / 100.0; }
@@ -282,7 +361,12 @@ Rectangle {
                             Rectangle { width: volSlider.visualPosition * parent.width; height: parent.height; color: Colors.blue; radius: 3 }
                         }
                         handle: Rectangle {
-                            x: volSlider.leftPadding + volSlider.visualPosition * (volSlider.availableWidth - width); y: volSlider.topPadding + volSlider.availableHeight / 2 - height / 2; width: 16; height: 16; radius: 8; color: Colors.bg0; border.color: Colors.blue; border.width: 4
+                            x: volSlider.leftPadding + volSlider.visualPosition * (volSlider.availableWidth - width); y: volSlider.topPadding + volSlider.availableHeight / 2 - height / 2; 
+                            width: 16; height: 16; radius: 8; color: Colors.bg0; border.color: Colors.blue
+                            border.width: volSlider.pressed ? 6 : 4
+                            scale: volSlider.hovered ? 1.2 : 1.0
+                            Behavior on border.width { NumberAnimation { duration: 150 } }
+                            Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
                         }
                     }
                 }
@@ -292,7 +376,14 @@ Rectangle {
                     Item {
                         width: parent.width; height: 20
                         Row { anchors.left: parent.left; spacing: 8
-                            Text { text: "󰃠"; color: Colors.orange; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter }
+                            Text { 
+                                text: {
+                                    if (dashWidget.briPercent < 33) return "󰃞";
+                                    if (dashWidget.briPercent < 66) return "󰃟";
+                                    return "󰃠";
+                                }
+                                color: Colors.orange; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter 
+                            }
                             Text { text: "Brightness"; color: Colors.orange; font.pixelSize: 13; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter }
                         }
                         Text { anchors.right: parent.right; text: dashWidget.briPercent + "%"; color: Colors.orange; font.pixelSize: 13; font.family: "JetBrainsMono Nerd Font" }
@@ -300,9 +391,7 @@ Rectangle {
                     Slider {
                         id: briSlider
                         anchors.bottom: parent.bottom; width: parent.width; height: 24 
-                        from: 0; to: 100
-                        focusPolicy: Qt.NoFocus
-                        
+                        from: 0; to: 100; focusPolicy: Qt.NoFocus
                         value: dashWidget.briPercent
                         
                         onMoved: { dashWidget.briPercent = Math.round(value); }
@@ -322,7 +411,12 @@ Rectangle {
                             Rectangle { width: briSlider.visualPosition * parent.width; height: parent.height; color: Colors.orange; radius: 3 }
                         }
                         handle: Rectangle {
-                            x: briSlider.leftPadding + briSlider.visualPosition * (briSlider.availableWidth - width); y: briSlider.topPadding + briSlider.availableHeight / 2 - height / 2; width: 16; height: 16; radius: 8; color: Colors.bg0; border.color: Colors.orange; border.width: 4
+                            x: briSlider.leftPadding + briSlider.visualPosition * (briSlider.availableWidth - width); y: briSlider.topPadding + briSlider.availableHeight / 2 - height / 2; 
+                            width: 16; height: 16; radius: 8; color: Colors.bg0; border.color: Colors.orange
+                            border.width: briSlider.pressed ? 6 : 4
+                            scale: briSlider.hovered ? 1.2 : 1.0
+                            Behavior on border.width { NumberAnimation { duration: 150 } }
+                            Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
                         }
                     }
                 }
@@ -335,6 +429,7 @@ Rectangle {
                     Rectangle {
                         width: (parent.width - 10) / 2; height: 30; radius: 6
                         color: !dashWidget.showClipboard ? Colors.bg2 : "transparent"
+                        Behavior on color { ColorAnimation { duration: 200 } }
                         Row { anchors.centerIn: parent; spacing: 6
                             Text { text: "󰂚"; color: Colors.fg; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font" }
                             Text { text: "Notifications"; color: Colors.fg; font.bold: true; font.pixelSize: 12 }
@@ -344,6 +439,7 @@ Rectangle {
                     Rectangle {
                         width: (parent.width - 10) / 2; height: 30; radius: 6
                         color: dashWidget.showClipboard ? Colors.bg2 : "transparent"
+                        Behavior on color { ColorAnimation { duration: 200 } }
                         Row { anchors.centerIn: parent; spacing: 6
                             Text { text: "󰅌"; color: Colors.fg; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font" }
                             Text { text: "Clipboard"; color: Colors.fg; font.bold: true; font.pixelSize: 12 }
@@ -368,9 +464,11 @@ Rectangle {
                         Rectangle {
                             width: 70; height: 24; radius: 4; color: Colors.red
                             anchors.top: parent.top; anchors.right: parent.right; z: 2 
+                            scale: clearNotifMouse.pressed ? 0.9 : 1.0
+                            Behavior on scale { NumberAnimation { duration: 100 } }
                             Text { anchors.centerIn: parent; text: "󰆴 Clear"; color: Colors.bg0; font.bold: true; font.pixelSize: 11; font.family: "JetBrainsMono Nerd Font" }
                             MouseArea {
-                                anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+                                id: clearNotifMouse; anchors.fill: parent; cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     try {
                                         let itemsToClear = server.trackedNotifications.values;
@@ -394,9 +492,11 @@ Rectangle {
                         Rectangle {
                             width: 70; height: 24; radius: 4; color: Colors.red
                             anchors.top: parent.top; anchors.right: parent.right; z: 2
+                            scale: clearClipMouse.pressed ? 0.9 : 1.0
+                            Behavior on scale { NumberAnimation { duration: 100 } }
                             Text { anchors.centerIn: parent; text: "󰆴 Clear"; color: Colors.bg0; font.bold: true; font.pixelSize: 11; font.family: "JetBrainsMono Nerd Font" }
                             MouseArea {
-                                anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+                                id: clearClipMouse; anchors.fill: parent; cursorShape: Qt.PointingHandCursor
                                 onClicked: { Quickshell.execDetached(["cliphist", "wipe"]); clipModel.clear(); }
                             }
                         }
@@ -406,32 +506,45 @@ Rectangle {
                             model: clipModel
                             delegate: Item {
                                 width: parent.width; height: 40
-                                Rectangle { anchors.fill: parent; radius: 6; color: itemMouse.containsMouse ? Colors.bg2 : "transparent" }
+                                Rectangle { anchors.fill: parent; radius: 6; color: itemMouse.containsMouse ? Colors.bg2 : "transparent"; Behavior on color { ColorAnimation { duration: 150 } } }
+                                
+                                Timer { id: copySuccessTimer; interval: 1500; onTriggered: clipModel.setProperty(index, "justCopied", false) }
+
                                 MouseArea {
                                     id: itemMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                     onClicked: {
                                         let cmd = "cliphist list | awk -F $'\\t' '$1 == \"" + model.clipId + "\"' | cliphist decode | wl-copy";
                                         Quickshell.execDetached(["bash", "-c", cmd]);
-                                        dashPopup.visible = false;
+                                        clipModel.setProperty(index, "justCopied", true);
+                                        copySuccessTimer.restart();
                                     }
                                 }
                                 Row {
                                     anchors.fill: parent; anchors.margins: 6; spacing: 8
                                     Text { text: model.clipText; color: Colors.fg; font.pixelSize: 12; width: parent.width - 64; anchors.verticalCenter: parent.verticalCenter; elide: Text.ElideRight; maximumLineCount: 2; wrapMode: Text.Wrap }
+                                    
                                     Rectangle {
-                                        width: 26; height: 26; radius: 4; color: copyMouse.containsMouse ? Colors.blue : Colors.bg3; anchors.verticalCenter: parent.verticalCenter
-                                        Text { anchors.centerIn: parent; text: "󰆏"; color: copyMouse.containsMouse ? Colors.bg0 : Colors.fg; font.pixelSize: 13; font.family: "JetBrainsMono Nerd Font" }
+                                        width: 26; height: 26; radius: 4; color: model.justCopied ? "transparent" : (copyMouse.containsMouse ? Colors.blue : Colors.bg3); anchors.verticalCenter: parent.verticalCenter
+                                        Behavior on color { ColorAnimation { duration: 150 } }
+                                        Text { 
+                                            anchors.centerIn: parent; 
+                                            text: model.justCopied ? "󰄬" : "󰆏"; 
+                                            color: model.justCopied ? "#A6E3A1" : (copyMouse.containsMouse ? Colors.bg0 : Colors.fg); 
+                                            font.pixelSize: 13; font.family: "JetBrainsMono Nerd Font" 
+                                        }
                                         MouseArea {
                                             id: copyMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                             onClicked: {
                                                 let cmd = "cliphist list | awk -F $'\\t' '$1 == \"" + model.clipId + "\"' | cliphist decode | wl-copy";
                                                 Quickshell.execDetached(["bash", "-c", cmd]);
-                                                dashPopup.visible = false;
+                                                clipModel.setProperty(index, "justCopied", true);
+                                                copySuccessTimer.restart();
                                             }
                                         }
                                     }
                                     Rectangle {
                                         width: 26; height: 26; radius: 4; color: delMouse.containsMouse ? Colors.red : "transparent"; anchors.verticalCenter: parent.verticalCenter
+                                        Behavior on color { ColorAnimation { duration: 150 } }
                                         Text { anchors.centerIn: parent; text: "󰆴"; color: delMouse.containsMouse ? Colors.bg0 : Colors.grey1; font.pixelSize: 13; font.family: "JetBrainsMono Nerd Font" }
                                         MouseArea {
                                             id: delMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
@@ -456,7 +569,6 @@ Rectangle {
     // ==========================================
     PanelWindow {
         id: powerMenuWindow
-        
         anchors { top: true; bottom: true; left: true; right: true }
         color: "transparent"
         exclusionMode: ExclusionMode.Ignore
@@ -493,9 +605,7 @@ Rectangle {
         }
 
         Timer {
-            id: countdownTimer
-            interval: 1000
-            repeat: true
+            id: countdownTimer; interval: 1000; repeat: true
             onTriggered: {
                 powerMenuWindow.countdown--
                 if (powerMenuWindow.countdown <= 0) {
@@ -513,15 +623,12 @@ Rectangle {
             focus: true
             Keys.onEscapePressed: powerMenuWindow.closeMenu()
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: powerMenuWindow.closeMenu()
-            }
+            MouseArea { anchors.fill: parent; onClicked: powerMenuWindow.closeMenu() }
 
             ListView {
                 id: powerList
                 anchors.centerIn: parent
-                width: (120 * 4) + (20 * 3) 
+                width: (120 * 5) + (20 * 4) 
                 height: 120
                 orientation: ListView.Horizontal
                 spacing: 20
@@ -549,34 +656,28 @@ Rectangle {
                     border.width: isActive ? 2 : (isFocused ? 1 : 1)
                     border.color: isActive ? Colors.red : (isFocused ? Colors.blue : Colors.bg2)
 
-                    Column {
-                        anchors.centerIn: parent
-                        spacing: 12
+                    scale: fullPowerMouse.containsMouse || isFocused ? 1.05 : 1.0
+                    Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
 
+                    Column {
+                        anchors.centerIn: parent; spacing: 12
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: btnRect.isActive ? powerMenuWindow.countdown : modelData.icon
-                            font.pixelSize: 40
-                            font.family: "JetBrainsMono Nerd Font"
-                            color: btnRect.isActive ? Colors.red : Colors.fg
+                            font.pixelSize: 40; font.family: "JetBrainsMono Nerd Font"
+                            color: btnRect.isActive ? Colors.red : modelData.color
                         }
-
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: btnRect.isActive ? "Confirm?" : modelData.name
-                            font.pixelSize: 14
-                            font.bold: true
-                            color: Colors.fg
+                            font.pixelSize: 14; font.bold: true; color: Colors.fg
                         }
                     }
 
                     MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        
+                        id: fullPowerMouse
+                        anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                         onEntered: { powerList.currentIndex = index }
-                        
                         onClicked: {
                             powerList.currentIndex = index
                             powerList.forceActiveFocus()
@@ -587,26 +688,21 @@ Rectangle {
             }
             
             Text {
-                anchors.top: powerList.bottom
-                anchors.topMargin: 40
+                anchors.top: powerList.bottom; anchors.topMargin: 40
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Click once or press Enter to start 10s timer. Double click to execute instantly.\nPress Esc or click outside to cancel."
-                horizontalAlignment: Text.AlignHCenter
-                color: Colors.grey1
-                font.pixelSize: 12
+                horizontalAlignment: Text.AlignHCenter; color: Colors.grey1; font.pixelSize: 12
             }
         }
     }
 
     // ==========================================
-    // 4. FLOATING OSD (For New Notifications)
+    // 4. FLOATING OSD
     // ==========================================
     PanelWindow {
         id: osdWindow
-        anchors.top: true
-        anchors.right: true
-        margins.top: 45
-        margins.right: 15
+        anchors.top: true; anchors.right: true
+        margins.top: 45; margins.right: 15
         
         implicitWidth: 335 
         implicitHeight: osdCol.implicitHeight > 0 ? (osdCol.implicitHeight + 60) : 1
@@ -617,8 +713,7 @@ Rectangle {
         Column {
             id: osdCol
             width: 320; spacing: 10
-            anchors.top: parent.top
-            anchors.right: parent.right
+            anchors.top: parent.top; anchors.right: parent.right
 
             Repeater {
                 model: server.trackedNotifications
