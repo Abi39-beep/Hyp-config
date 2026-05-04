@@ -6,9 +6,91 @@ CONF_DIR="$HOME/.config"
 CACHE_DIR="$HOME/.cache"
 ACTIVE_THEME_FILE="$CACHE_DIR/current_theme"
 SWITCHER_THEME="$CONF_DIR/rofi/switcher.rasi"
-WALLPAPER_THEME="$CONF_DIR/rofi/wallpaper.rasi"
 
 mkdir -p "$CACHE_DIR"
+
+STYLE_WALL="
+@import \"$CONF_DIR/rofi/color.rasi\"
+
+configuration {
+    show-icons: true;
+}
+
+window {
+    width: 1000px;
+    height: 600px;
+    border: 2px;
+    border-color: @selected;
+    border-radius: 12px;
+    background-color: @background;
+}
+
+mainbox {
+    background-color: transparent;
+    children:[ inputbar, listview ];
+    spacing: 15px;
+    padding: 10px;
+}
+
+inputbar {
+    background-color: transparent;
+    text-color: @foreground;
+    children:[ prompt, entry ];
+    padding: 10px 20px;
+}
+
+prompt {
+    background-color: transparent;
+    text-color: @foreground;
+    margin: 0px 5px 0px 0px;
+}
+
+entry {
+    background-color: transparent;
+    text-color: @foreground;
+    placeholder: \"Search...\";
+    placeholder-color: gray;
+}
+
+listview {
+    background-color: transparent;
+    columns: 4;
+    lines: 2;
+    spacing: 15px;
+    margin: 0px 20px 20px 20px;
+    fixed-columns: false;
+    border: 0px;
+    scrollbar: false;
+}
+
+element {
+    orientation: vertical;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: transparent;
+}
+
+element normal.normal, element alternate.normal {
+    background-color: transparent;
+    text-color: @foreground;
+}
+
+element selected.normal {
+    background-color: @selected;
+    text-color: @background;
+    border-color: @selected;
+}
+
+element-icon {
+    size: 200px;
+    cursor: pointer;
+    horizontal-align: 0.5;
+}
+
+element-text {
+    enabled: false;
+}
+"
 
 wallpaper_list() {
     find "$1" -maxdepth 1 -type f \
@@ -25,7 +107,7 @@ apply_theme() {
         find "$THEME_DIR" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort |
         rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Theme:"
     )
-    
+
     [ -n "$selected_theme" ] || return 1
 
     printf '%s\n' "$selected_theme" > "$ACTIVE_THEME_FILE"
@@ -86,7 +168,7 @@ apply_wallpaper() {
     choice=$(
         for img in "${wallpapers[@]}"; do
             printf '%s\0icon\x1fthumbnail://%s\n' "$img" "$img"
-        done | rofi -dmenu -i -show-icons -theme "$WALLPAPER_THEME" -p "Wallpaper:"
+        done | rofi -dmenu -i -show-icons -theme-str "$STYLE_WALL" -p "Wallpaper:"
     )
 
     [ -n "$choice" ] || return 1
@@ -95,36 +177,10 @@ apply_wallpaper() {
     ln -sfn "$choice" "$lock_image"
 }
 
-# --- BAR SWITCHER FUNCTION ---
-apply_bar() {
-    local quickshell_dir="$HOME/.config/quickshell/learn"
-    local quickshell_target="$quickshell_dir/shell.qml"
-    local options="Float\nModern\nNormal"
-    local choice
-    local source_file
-
-    # Show Rofi Menu
-    choice=$(echo -e "$options" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Select Bar:")
-
-    # If nothing is selected, exit this function
-    [ -n "$choice" ] || return 1
-
-    # Define the updated source file path (pointed to the new QuickShell directory)
-    source_file="$HOME/.config/quickshell/bar/$choice/shell.qml"
-
-    # Check if the chosen source file actually exists and copy it
-    if [ -f "$source_file" ]; then
-        mkdir -p "$quickshell_dir"
-        cp "$source_file" "$quickshell_target"
-    fi
-}
-
-# --- MAIN MENU EXECUTION ---
-mode=$(printf "Theme\nWallpaper\nBar" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Action:")
+mode=$(printf "Theme\nWallpaper" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Action:")
 [ -n "$mode" ] || exit 0
 
 case "$mode" in
     Theme) apply_theme ;;
     Wallpaper) apply_wallpaper ;;
-    Bar) apply_bar ;;
 esac
