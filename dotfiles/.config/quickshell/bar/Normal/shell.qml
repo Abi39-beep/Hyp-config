@@ -8,10 +8,11 @@ ShellRoot {
         anchors.left: true
         anchors.right: true
         height: 38 
+        color: "transparent"
 
         Rectangle {
             anchors.fill: parent
-            color: Colors.bg0
+            color: Qt.alpha(Colors.bg0, 0.90)
 
             Row {
                 anchors.left: parent.left

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls 
+import QtQuick.Effects 
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -36,6 +37,14 @@ Rectangle {
                 resetTimer.start();
             }
         }
+    }
+
+    // Utility Format Function for Media Timers
+    function formatTime(seconds) {
+        if (isNaN(seconds) || seconds < 0) return "0:00";
+        let m = Math.floor(seconds / 60);
+        let s = Math.floor(seconds % 60);
+        return m + ":" + (s < 10 ? "0" : "") + s;
     }
 
     // ==========================================
@@ -85,7 +94,7 @@ Rectangle {
 
     // --- SYSTEM STATS (CPU & MEMORY) ---
     property string cpuUsage: "0.0%"
-    property string memUsage: "0.0 GB"
+    property string memUsage: "0 MB"
 
     Timer {
         id: statTimer
@@ -102,8 +111,69 @@ Rectangle {
 
     Process {
         id: memPoll
-        command:["bash", "-c", "free -m | awk '/Mem:/ {printf \"%.1f\", $3/1024}'"]
-        stdout: SplitParser { onRead: data => { if (data.trim() !== "") dashWidget.memUsage = data + " GB"; } }
+        command:["bash", "-c", "free -m | awk '/Mem:/ { if($3 < 1024) printf \"%d MB\", $3; else printf \"%.1f GB\", $3/1024 }'"]
+        stdout: SplitParser { onRead: data => { if (data.trim() !== "") dashWidget.memUsage = data.trim(); } }
+    }
+
+    // --- MEDIA CONTROLLER ---
+    property string mediaStatus: "Stopped"
+    property string mediaTitle: "No Media Playing"
+    property string mediaArtist: ""
+    property string mediaArt: ""
+    property real mediaLength: 0
+    property real mediaPosition: 0
+
+    Timer {
+        id: mediaPollTimer
+        interval: 1000 
+        running: true; repeat: true
+        onTriggered: { 
+            if (!mediaWatcher.running) mediaWatcher.running = true; 
+            if (dashWidget.mediaStatus === "Playing" && !mediaPosWatcher.running) mediaPosWatcher.running = true;
+        }
+    }
+
+    Process {
+        id: mediaWatcher
+        command:["playerctl", "metadata", "--format", "{{status}}||{{title}}||{{artist}}||{{mpris:artUrl}}||{{mpris:length}}"]
+        
+        stdout: SplitParser {
+            onRead: data => {
+                let parts = data.split("||");
+                if (parts.length >= 5) {
+                    dashWidget.mediaStatus = parts[0].trim();
+                    dashWidget.mediaTitle = parts[1].trim() || "Unknown Title";
+                    dashWidget.mediaArtist = parts[2] ? parts[2].trim() : "Unknown Artist";
+                    dashWidget.mediaArt = parts[3] ? parts[3].trim() : "";
+                    
+                    let len = parseInt(parts[4].trim());
+                    dashWidget.mediaLength = isNaN(len) ? 0 : (len / 1000000.0);
+                }
+            }
+        }
+        onExited: (code) => {
+            if (code !== 0) {
+                dashWidget.mediaStatus = "Stopped";
+                dashWidget.mediaTitle = "No Media Playing";
+                dashWidget.mediaArtist = "";
+                dashWidget.mediaArt = "";
+                dashWidget.mediaLength = 0;
+                dashWidget.mediaPosition = 0;
+            }
+        }
+    }
+
+    Process {
+        id: mediaPosWatcher
+        command:["playerctl", "position"]
+        stdout: SplitParser {
+            onRead: data => {
+                let pos = parseFloat(data.trim());
+                if (!isNaN(pos) && !mediaProgress.pressed) {
+                    dashWidget.mediaPosition = pos;
+                }
+            }
+        }
     }
 
     // Power Execution
@@ -181,8 +251,9 @@ Rectangle {
                     width: parent.width - 34; spacing: 4
                     Row {
                         spacing: 6
-                        Text { text: "󰎆"; color: Colors.blue; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font" }
-                        Text { text: (modelData && modelData.appName) ? modelData.appName : "System"; color: Colors.blue; font.pixelSize: 11; font.bold: true }
+                        height: Math.max(iconTxt.implicitHeight, appTxt.implicitHeight) 
+                        Text { id: iconTxt; text: "󰎆"; color: Colors.blue; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter }
+                        Text { id: appTxt; text: (modelData && modelData.appName) ? modelData.appName : "System"; color: Colors.blue; font.pixelSize: 11; font.bold: true; anchors.verticalCenter: parent.verticalCenter }
                     }
                     Text { text: (modelData && modelData.summary) ? modelData.summary : ""; color: Colors.fg; font.pixelSize: 13; font.bold: true; width: parent.width; wrapMode: Text.Wrap }
                     Text { text: ((modelData && modelData.body) ? modelData.body : "").replace(/<[^>]*>?/gm, ''); color: Colors.grey1; font.pixelSize: 12; width: parent.width; wrapMode: Text.Wrap; visible: text.length > 0; maximumLineCount: cardRoot.isOsd ? 3 : 10; elide: Text.ElideRight }
@@ -239,7 +310,7 @@ Rectangle {
             id: bgRect
             anchors.top: parent.top; anchors.right: parent.right
             anchors.topMargin: 45; anchors.rightMargin: 15    
-            width: 380; height: 665 // Reduced height back since media controller is removed
+            width: 380; height: 790 
             
             color: Qt.alpha(Colors.bg0, 0.95); border.color: Colors.bg2; border.width: 1; radius: 16
             
@@ -284,7 +355,138 @@ Rectangle {
 
                 Rectangle { width: parent.width; height: 1; color: Colors.bg2 }
 
-                // --- HARDWARE STATS (CPU & MEMORY) ---
+                // --- MEDIA CONTROLLER ---
+                Item {
+                    width: parent.width; height: 110 
+                    Rectangle {
+                        id: mediaBaseRect
+                        anchors.fill: parent; radius: 12; color: Colors.bg1; border.width: 1; border.color: Colors.bg2
+                        
+                        // FIX: Added layer.enabled: true so the effect can read them even though they are invisible!
+                        Image {
+                            id: artImage
+                            anchors.fill: parent; anchors.margins: 1
+                            source: {
+                                if (!dashWidget.mediaArt) return "";
+                                if (dashWidget.mediaArt.startsWith("http") || dashWidget.mediaArt.startsWith("file://")) return dashWidget.mediaArt;
+                                return "file://" + dashWidget.mediaArt; 
+                            }
+                            fillMode: Image.PreserveAspectCrop; visible: false
+                            layer.enabled: true 
+                        }
+
+                        Rectangle {
+                            id: maskRect
+                            anchors.fill: parent; anchors.margins: 1; radius: 11
+                            color: "black"; visible: false
+                            layer.enabled: true 
+                        }
+
+                        MultiEffect {
+                            anchors.fill: maskRect
+                            source: artImage
+                            maskEnabled: true
+                            maskSource: maskRect
+                            opacity: dashWidget.mediaArt !== "" ? 0.6 : 0
+                            Behavior on opacity { NumberAnimation { duration: 300 } }
+                        }
+                        
+                        Rectangle {
+                            anchors.fill: parent; anchors.margins: 1; radius: 11
+                            color: dashWidget.mediaArt !== "" ? "#B3000000" : "transparent"
+                            Behavior on color { ColorAnimation { duration: 300 } }
+                        }
+                        
+                        Item {
+                            anchors.fill: parent; anchors.margins: 12
+
+                            Item {
+                                anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+                                height: 40
+
+                                Column {
+                                    anchors.left: parent.left; anchors.right: btnRow.left; anchors.rightMargin: 10
+                                    anchors.verticalCenter: parent.verticalCenter; spacing: 4
+                                    Text { text: dashWidget.mediaTitle; color: Colors.fg; font.pixelSize: 14; font.bold: true; elide: Text.ElideRight; maximumLineCount: 1; width: parent.width }
+                                    Text { text: dashWidget.mediaArtist; color: Colors.grey1; font.pixelSize: 12; elide: Text.ElideRight; maximumLineCount: 1; width: parent.width }
+                                }
+                                
+                                Row {
+                                    id: btnRow
+                                    anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter; spacing: 8
+                                    Rectangle {
+                                        width: 30; height: 30; radius: 15; color: hoverPrev.containsMouse ? Colors.bg2 : "transparent"
+                                        scale: hoverPrev.pressed ? 0.9 : 1.0; Behavior on scale { NumberAnimation { duration: 100 } }
+                                        Text { anchors.centerIn: parent; text: "󰒮"; color: Colors.fg; font.pixelSize: 16; font.family: "JetBrainsMono Nerd Font" }
+                                        MouseArea { id: hoverPrev; anchors.fill: parent; hoverEnabled: true; onClicked: { Quickshell.execDetached(["playerctl", "previous"]); mediaWatcher.running = true; } }
+                                    }
+                                    Rectangle {
+                                        width: 36; height: 36; radius: 18; color: Colors.blue
+                                        scale: hoverPlay.pressed ? 0.9 : 1.0; Behavior on scale { NumberAnimation { duration: 100 } }
+                                        Text { 
+                                            anchors.centerIn: parent; text: dashWidget.mediaStatus === "Playing" ? "󰏤" : "󰐊"; color: Colors.bg0; font.pixelSize: 18; font.family: "JetBrainsMono Nerd Font"
+                                            anchors.horizontalCenterOffset: dashWidget.mediaStatus === "Playing" ? 0 : 2 
+                                        }
+                                        MouseArea { id: hoverPlay; anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: { Quickshell.execDetached(["playerctl", "play-pause"]); mediaWatcher.running = true; } }
+                                    }
+                                    Rectangle {
+                                        width: 30; height: 30; radius: 15; color: hoverNext.containsMouse ? Colors.bg2 : "transparent"
+                                        scale: hoverNext.pressed ? 0.9 : 1.0; Behavior on scale { NumberAnimation { duration: 100 } }
+                                        Text { anchors.centerIn: parent; text: "󰒭"; color: Colors.fg; font.pixelSize: 16; font.family: "JetBrainsMono Nerd Font" }
+                                        MouseArea { id: hoverNext; anchors.fill: parent; hoverEnabled: true; onClicked: { Quickshell.execDetached(["playerctl", "next"]); mediaWatcher.running = true; } }
+                                    }
+                                }
+                            }
+
+                            Item {
+                                anchors.bottom: parent.bottom; anchors.left: parent.left; anchors.right: parent.right
+                                height: 35
+                                
+                                Text {
+                                    anchors.left: parent.left; anchors.top: parent.top
+                                    text: dashWidget.formatTime(dashWidget.mediaPosition)
+                                    color: Colors.grey1; font.pixelSize: 11
+                                }
+                                
+                                Text {
+                                    anchors.right: parent.right; anchors.top: parent.top
+                                    text: dashWidget.formatTime(dashWidget.mediaLength)
+                                    color: Colors.grey1; font.pixelSize: 11
+                                }
+
+                                Slider {
+                                    id: mediaProgress
+                                    anchors.bottom: parent.bottom; anchors.left: parent.left; anchors.right: parent.right
+                                    height: 20; focusPolicy: Qt.NoFocus 
+                                    from: 0; to: dashWidget.mediaLength > 0 ? dashWidget.mediaLength : 1
+                                    value: dashWidget.mediaPosition
+                                    
+                                    onPressedChanged: {
+                                        if (!pressed) { 
+                                            Quickshell.execDetached(["playerctl", "position", value.toString()]);
+                                            dashWidget.mediaPosition = value;
+                                        }
+                                    }
+                                    
+                                    background: Rectangle {
+                                        x: mediaProgress.leftPadding; y: mediaProgress.topPadding + mediaProgress.availableHeight / 2 - height / 2; width: mediaProgress.availableWidth; height: 6; radius: 3; color: Colors.bg2
+                                        Rectangle { width: mediaProgress.visualPosition * parent.width; height: parent.height; color: Colors.blue; radius: 3 }
+                                    }
+                                    handle: Rectangle {
+                                        x: mediaProgress.leftPadding + mediaProgress.visualPosition * (mediaProgress.availableWidth - width); y: mediaProgress.topPadding + mediaProgress.availableHeight / 2 - height / 2; 
+                                        width: 14; height: 14; radius: 7; color: Colors.bg0; border.color: Colors.blue
+                                        border.width: mediaProgress.pressed ? 4 : 2
+                                        scale: mediaProgress.hovered ? 1.2 : 1.0
+                                        Behavior on border.width { NumberAnimation { duration: 150 } }
+                                        Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // --- HARDWARE STATS ---
                 Row {
                     width: parent.width; height: 40; spacing: 10
                     
@@ -343,10 +545,8 @@ Rectangle {
                         anchors.bottom: parent.bottom; width: parent.width; height: 24 
                         from: 0; to: 100; focusPolicy: Qt.NoFocus 
                         value: dashWidget.volPercent
-                        
                         onMoved: { if (dashWidget.audio) dashWidget.audio.volume = value / 100.0; }
                         onPressedChanged: { if (!pressed) Quickshell.execDetached(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", (value / 100.0).toFixed(2)]); }
-                        
                         MouseArea {
                             anchors.fill: parent; acceptedButtons: Qt.NoButton
                             onWheel: (wheel) => {
@@ -393,10 +593,8 @@ Rectangle {
                         anchors.bottom: parent.bottom; width: parent.width; height: 24 
                         from: 0; to: 100; focusPolicy: Qt.NoFocus
                         value: dashWidget.briPercent
-                        
                         onMoved: { dashWidget.briPercent = Math.round(value); }
                         onPressedChanged: { if (!pressed) Quickshell.execDetached(["brightnessctl", "set", Math.round(value) + "%"]); }
-                        
                         MouseArea {
                             anchors.fill: parent; acceptedButtons: Qt.NoButton 
                             onWheel: (wheel) => {
@@ -424,15 +622,17 @@ Rectangle {
                 Rectangle { width: parent.width; height: 1; color: Colors.bg2 }
 
                 // --- TAB SELECTOR ---
+                // FIX: Used explicit anchors.verticalCenter inside the rows to perfectly level the icons and text
                 Row {
                     width: parent.width; height: 30; spacing: 10
                     Rectangle {
                         width: (parent.width - 10) / 2; height: 30; radius: 6
                         color: !dashWidget.showClipboard ? Colors.bg2 : "transparent"
                         Behavior on color { ColorAnimation { duration: 200 } }
-                        Row { anchors.centerIn: parent; spacing: 6
-                            Text { text: "󰂚"; color: Colors.fg; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font" }
-                            Text { text: "Notifications"; color: Colors.fg; font.bold: true; font.pixelSize: 12 }
+                        Row { 
+                            anchors.centerIn: parent; spacing: 6
+                            Text { text: "󰂚"; color: Colors.fg; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter }
+                            Text { text: "Notifications"; color: Colors.fg; font.bold: true; font.pixelSize: 12; anchors.verticalCenter: parent.verticalCenter }
                         }
                         MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: dashWidget.showClipboard = false }
                     }
@@ -440,9 +640,10 @@ Rectangle {
                         width: (parent.width - 10) / 2; height: 30; radius: 6
                         color: dashWidget.showClipboard ? Colors.bg2 : "transparent"
                         Behavior on color { ColorAnimation { duration: 200 } }
-                        Row { anchors.centerIn: parent; spacing: 6
-                            Text { text: "󰅌"; color: Colors.fg; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font" }
-                            Text { text: "Clipboard"; color: Colors.fg; font.bold: true; font.pixelSize: 12 }
+                        Row { 
+                            anchors.centerIn: parent; spacing: 6
+                            Text { text: "󰅌"; color: Colors.fg; font.pixelSize: 14; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter }
+                            Text { text: "Clipboard"; color: Colors.fg; font.bold: true; font.pixelSize: 12; anchors.verticalCenter: parent.verticalCenter }
                         }
                         MouseArea { 
                             anchors.fill: parent; cursorShape: Qt.PointingHandCursor
@@ -466,7 +667,12 @@ Rectangle {
                             anchors.top: parent.top; anchors.right: parent.right; z: 2 
                             scale: clearNotifMouse.pressed ? 0.9 : 1.0
                             Behavior on scale { NumberAnimation { duration: 100 } }
-                            Text { anchors.centerIn: parent; text: "󰆴 Clear"; color: Colors.bg0; font.bold: true; font.pixelSize: 11; font.family: "JetBrainsMono Nerd Font" }
+                            // FIX: Separated the Clear icon and text so they align flawlessly
+                            Row {
+                                anchors.centerIn: parent; spacing: 4
+                                Text { text: "󰆴"; color: Colors.bg0; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter }
+                                Text { text: "Clear"; color: Colors.bg0; font.bold: true; font.pixelSize: 11; anchors.verticalCenter: parent.verticalCenter }
+                            }
                             MouseArea {
                                 id: clearNotifMouse; anchors.fill: parent; cursorShape: Qt.PointingHandCursor
                                 onClicked: {
@@ -494,7 +700,12 @@ Rectangle {
                             anchors.top: parent.top; anchors.right: parent.right; z: 2
                             scale: clearClipMouse.pressed ? 0.9 : 1.0
                             Behavior on scale { NumberAnimation { duration: 100 } }
-                            Text { anchors.centerIn: parent; text: "󰆴 Clear"; color: Colors.bg0; font.bold: true; font.pixelSize: 11; font.family: "JetBrainsMono Nerd Font" }
+                            // FIX: Separated the Clear icon and text so they align flawlessly
+                            Row {
+                                anchors.centerIn: parent; spacing: 4
+                                Text { text: "󰆴"; color: Colors.bg0; font.pixelSize: 12; font.family: "JetBrainsMono Nerd Font"; anchors.verticalCenter: parent.verticalCenter }
+                                Text { text: "Clear"; color: Colors.bg0; font.bold: true; font.pixelSize: 11; anchors.verticalCenter: parent.verticalCenter }
+                            }
                             MouseArea {
                                 id: clearClipMouse; anchors.fill: parent; cursorShape: Qt.PointingHandCursor
                                 onClicked: { Quickshell.execDetached(["cliphist", "wipe"]); clipModel.clear(); }
@@ -521,7 +732,7 @@ Rectangle {
                                 }
                                 Row {
                                     anchors.fill: parent; anchors.margins: 6; spacing: 8
-                                    Text { text: model.clipText; color: Colors.fg; font.pixelSize: 12; width: parent.width - 64; anchors.verticalCenter: parent.verticalCenter; elide: Text.ElideRight; maximumLineCount: 2; wrapMode: Text.Wrap }
+                                    Text { text: model.clipText; color: Colors.fg; font.pixelSize: 12; width: parent.width - 68; anchors.verticalCenter: parent.verticalCenter; elide: Text.ElideRight; maximumLineCount: 2; wrapMode: Text.Wrap }
                                     
                                     Rectangle {
                                         width: 26; height: 26; radius: 4; color: model.justCopied ? "transparent" : (copyMouse.containsMouse ? Colors.blue : Colors.bg3); anchors.verticalCenter: parent.verticalCenter

@@ -12,7 +12,7 @@ ShellRoot {
 
         Rectangle {
             anchors.fill: parent
-            color: Qt.alpha(Colors.bg0, 0.50)
+            color: Qt.alpha(Colors.bg0, 0.68)
             radius: 18
 
             // 1. One master Row that holds everything and sits dead center
