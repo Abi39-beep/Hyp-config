@@ -40,7 +40,7 @@ apply_theme() {
     cp "$THEME_DIR/$selected_theme/nvim/color.lua" "$HOME/.config/nvim/lua/color.lua"
     cp "$THEME_DIR/$selected_theme/noctalia/settings.json" "$HOME/.config/noctalia/settings.json"
     cp "$THEME_DIR/$selected_theme/firefox/userChrome.css" "$HOME/.config/mozilla/firefox/14qna8yw.default-release/chrome/userChrome.css"
-    cp "$THEME_DIR/$selected_theme/quickshell/Colors.qml" "$HOME/.config/quickshell/learn/Colors.qml"
+    cp "$THEME_DIR/$selected_theme/quickshell/Colors.qml" "$HOME/.config/quickshell/qubar/Colors.qml"
 
 
     pkill -USR1 kitty 2>/dev/null || true
@@ -97,7 +97,7 @@ apply_wallpaper() {
 
 # --- BAR SWITCHER FUNCTION ---
 apply_bar() {
-    local quickshell_dir="$HOME/.config/quickshell/learn"
+    local quickshell_dir="$HOME/.config/quickshell/qubar"
     local quickshell_target="$quickshell_dir/shell.qml"
     local options="Float\nModern\nNormal"
     local choice
