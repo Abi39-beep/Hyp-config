@@ -9,25 +9,48 @@ return {
     config = function()
         require("mason").setup()
         require("mason-lspconfig").setup({
-            ensure_installed = { "lua_ls" },
+            -- 1. Added rust_analyzer here so Mason installs it automatically
+            ensure_installed = { "lua_ls", "ts_ls", "cssls", "rust_analyzer" },
         })
 
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
         local fzf = require("fzf-lua")
 
-        -- 🚨 NEW NEOVIM 0.11+ API
-        -- This replaces the deprecated require("lspconfig").lua_ls.setup()
+        -- === LUA LSP ===
         vim.lsp.config("lua_ls", {
             capabilities = capabilities,
             settings = {
                 Lua = {
-                    diagnostics = { globals = { "vim" } },
+                    diagnostics = { globals = { "vim", "ags" } }, -- added "ags" global just in case
                 },
             },
         })
-
-        -- Tell Neovim to start the server
         vim.lsp.enable("lua_ls")
+
+        -- === TYPESCRIPT / JAVASCRIPT LSP ===
+        vim.lsp.config("ts_ls", {
+            capabilities = capabilities,
+        })
+        vim.lsp.enable("ts_ls")
+
+        -- === CSS / SCSS LSP ===
+        vim.lsp.config("cssls", {
+            capabilities = capabilities,
+        })
+        vim.lsp.enable("cssls")
+
+        -- === RUST LSP ===
+        vim.lsp.config("rust_analyzer", {
+            capabilities = capabilities,
+            settings = {
+                ["rust-analyzer"] = {
+                    check = {
+                        command = "clippy", -- The correct new setting
+                    },
+                },
+            },
+        })
+        vim.lsp.enable("rust_analyzer")
 
         -- Universal LSP Keybinds (Triggers when an LSP attaches to a buffer)
         vim.api.nvim_create_autocmd("LspAttach", {
@@ -49,7 +72,7 @@ return {
             end,
         })
 
-        -- Configure diagnostic symbols in the gutter (Uses your color.lua Diagnostic groups!)
+        -- Configure diagnostic symbols in the gutter
         local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
         for type, icon in pairs(signs) do
             local hl = "DiagnosticSign" .. type

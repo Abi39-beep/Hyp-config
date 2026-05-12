@@ -13,8 +13,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-    --require("plugins.tree"),
-    --require("plugins.telescope"),
     require("plugins.neo-tree"),
     require("plugins.gitsigns"),
     require("plugins.lazygit"),
