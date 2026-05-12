@@ -101,6 +101,13 @@ hl.window_rule({
     opaque = true,
 })
 
+-- Galculator
+hl.window_rule({
+    match  = { class = "^(galculator)$" },
+    float  = true,
+    center = true,
+})
+
 --------------------------------
 ---------- LAYER RULES ---------
 --------------------------------
