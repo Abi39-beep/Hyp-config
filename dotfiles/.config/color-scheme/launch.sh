@@ -38,9 +38,10 @@ apply_theme() {
     echo "source = $THEME_DIR/$selected_theme/hyprlock/$selected_theme.conf" > "$CONF_DIR/hypr/color.conf"
     echo "include=$THEME_DIR/$selected_theme/foot/$selected_theme.ini" > "$CONF_DIR/foot/color.ini"
     cp "$THEME_DIR/$selected_theme/nvim/color.lua" "$HOME/.config/nvim/lua/color.lua"
-    cp "$THEME_DIR/$selected_theme/noctalia/settings.json" "$HOME/.config/noctalia/settings.json"
     cp "$THEME_DIR/$selected_theme/firefox/userChrome.css" "$HOME/.config/mozilla/firefox/14qna8yw.default-release/chrome/userChrome.css"
     cp "$THEME_DIR/$selected_theme/quickshell/Colors.qml" "$HOME/.config/quickshell/qubar/Colors.qml"
+    cp "$THEME_DIR/$selected_theme/quickshell/Colors.qml" "$HOME/.config/quickshell/OSD/Colors.qml"
+    cp "$THEME_DIR/$selected_theme/hyprland/Colors.lua" "$HOME/.config/hypr/Modules/Colors.lua"
 
 
     pkill -USR1 kitty 2>/dev/null || true
