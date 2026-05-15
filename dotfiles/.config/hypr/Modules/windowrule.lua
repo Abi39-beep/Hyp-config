@@ -124,3 +124,28 @@ hl.layer_rule({
     match = { namespace = "^(logout_dialog)$" },
     blur  = true,
 })
+
+-- Quickshell OSD layer_rule
+hl.layer_rule({
+    match = { namespace = "^(leftosd)$" },
+    blur = true,
+    ignore_alpha = 0,
+})
+
+hl.layer_rule({
+    match = { namespace = "^(rightosd)$" },
+    blur = true,
+    ignore_alpha = 0,
+})
+
+hl.layer_rule({
+    match = { namespace = "^(bottomosd)$" },
+    blur = true,
+    ignore_alpha = 0,
+})
+
+hl.layer_rule({
+    match = { namespace = "^(workspaceosd)$" },
+    blur = true,
+    ignore_alpha = 0,
+})

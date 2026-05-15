@@ -23,7 +23,7 @@ apply_theme() {
 
     selected_theme=$(
         find "$THEME_DIR" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort |
-        rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Theme:"
+        rofi -dmenu -i -theme "$SWITCHER_THEME" -p " Theme:"
     )
     
     [ -n "$selected_theme" ] || return 1
@@ -120,12 +120,39 @@ apply_bar() {
     fi
 }
 
+# --- BAR LAYOUT SWITCHER FUNCTION (Bar / OSD) ---
+apply_barlayout() {
+    local quickshell_dir="$HOME/.config/quickshell"
+    local quickshell_target="$quickshell_dir/reload.sh"
+    local options="Bar\nOSD"
+    local choice
+    local source_file
+
+    choice=$(echo -e "$options" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Select Layout:")
+
+    [ -n "$choice" ] || return 1
+
+    source_file="$HOME/.config/quickshell/switch/$choice/reload.sh"
+
+    if [ -f "$source_file" ]; then
+        mkdir -p "$quickshell_dir"
+        cp "$source_file" "$quickshell_target"
+        chmod +x "$quickshell_target"
+    fi
+    
+    # Safely restart Quickshell without crashing the script
+    killall quickshell 2>/dev/null || true
+    bash "$quickshell_target" & disown
+}
+
 # --- MAIN MENU EXECUTION ---
-mode=$(printf "Theme\nWallpaper\nBar" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Action:")
+# Added 'Bar Layout' into the main menu selection
+mode=$(printf "Theme\nWallpaper\nBar Theme\nBar Layout" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Action:")
 [ -n "$mode" ] || exit 0
 
 case "$mode" in
     Theme) apply_theme ;;
     Wallpaper) apply_wallpaper ;;
-    Bar) apply_bar ;;
+    "Bar Theme") apply_bar ;;
+    "Bar Layout") apply_barlayout ;;
 esac

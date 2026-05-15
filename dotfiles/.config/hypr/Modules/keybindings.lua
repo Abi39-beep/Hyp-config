@@ -8,6 +8,7 @@ local fileManager = "thunar"
 local menu        = os.getenv("HOME") .. "/.config/rofi/launchers/type-1/launcher.sh"
 local browser     = "firefox"
 local wall        = os.getenv("HOME") .. "/.config/rofi/wall.sh"
+local barlayout   = os.getenv("HOME") .. "/.config/color-scheme/barlayout.sh"
 local colorLaunch = os.getenv("HOME") .. "/.config/color-scheme/launch.sh"
 local quickReload = os.getenv("HOME") .. "/.config/quickshell/reload.sh"
 local wallCycle   = os.getenv("HOME") .. "/.config/color-scheme/wall-cycle.sh"
@@ -30,7 +31,7 @@ hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(menu))
 --hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle only
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
-hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(wall))
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(barlayout))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(colorLaunch))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(quickReload))
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("foot"))
