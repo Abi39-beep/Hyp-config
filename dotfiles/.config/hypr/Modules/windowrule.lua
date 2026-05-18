@@ -130,6 +130,7 @@ hl.layer_rule({
     match = { namespace = "^(leftosd)$" },
     blur = true,
     ignore_alpha = 0,
+    animation = "slide left"
 })
 
 hl.layer_rule({
@@ -148,4 +149,29 @@ hl.layer_rule({
     match = { namespace = "^(workspaceosd)$" },
     blur = true,
     ignore_alpha = 0,
+    animation = "slide top"
+})
+
+hl.layer_rule({
+    match = { namespace = "^(qubarmorden)$" },
+    blur = true,
+    ignore_alpha = 0.5,
+})
+
+hl.layer_rule({
+    match = { namespace = "^(dashboard)$" },
+    blur = true,
+    ignore_alpha = 0,
+})
+
+hl.layer_rule({
+    match = { namespace = "^(normal2)$" },
+    blur = true,
+    ignore_alpha = 0,
+})
+
+hl.layer_rule({
+    match = { namespace = "^(pill)$" },
+    blur = true,
+    ignore_alpha = 0.5,
 })

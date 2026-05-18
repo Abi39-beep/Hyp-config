@@ -100,7 +100,7 @@ apply_wallpaper() {
 apply_bar() {
     local quickshell_dir="$HOME/.config/quickshell/qubar"
     local quickshell_target="$quickshell_dir/shell.qml"
-    local options="Float\nModern\nNormal"
+    local options="Float\nModern\nN2\nNormal\nPill"
     local choice
     local source_file
 
@@ -147,12 +147,12 @@ apply_barlayout() {
 
 # --- MAIN MENU EXECUTION ---
 # Added 'Bar Layout' into the main menu selection
-mode=$(printf "Theme\nWallpaper\nBar Theme\nBar Layout" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Action:")
+mode=$(printf "Theme\nWallpaper\nBar Style\nBar Layout" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Action:")
 [ -n "$mode" ] || exit 0
 
 case "$mode" in
     Theme) apply_theme ;;
     Wallpaper) apply_wallpaper ;;
-    "Bar Theme") apply_bar ;;
+    "Bar Style") apply_bar ;;
     "Bar Layout") apply_barlayout ;;
 esac
