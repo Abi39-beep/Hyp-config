@@ -1,0 +1,118 @@
+/* =========================================================
+   BRUTE-FORCE NIGHTFOX THEME FOR ZEN BROWSER
+   =========================================================
+*/
+
+:root {
+    /* 1. Override Zen's Custom Internal Theme Variables */
+    --zen-colors-primary: #575860 !important;
+    --zen-colors-bg-dark: #131a24 !important;
+    --zen-colors-bg: #192330 !important;
+    --zen-colors-bg-light: #212e3f !important;
+    --zen-colors-bg-lighter: #2b3b51 !important;
+    --zen-colors-border: #2b3b51 !important;
+    --zen-colors-fg: #cdcecf !important;
+    --zen-colors-tertiary: #575860 !important;
+}
+
+/* 2. Force Main Backgrounds (Sidebar, Top bar, Toolbars) */
+#main-window,
+#navigator-toolbox,
+#nav-bar,
+#PersonalToolbar,
+#TabsToolbar,
+#sidebar-box,
+#sidebar,
+.zen-sidebar,
+#zen-sidebar-web-panel,
+#zen-sidebar-wrapper,
+#zen-appcontent-wrapper,
+.browserContainer,
+page-action-buttons {
+    background-color: #192330 !important;
+    background: #192330 !important;
+    color: #cdcecf !important;
+    border-color: #2b3b51 !important;
+}
+
+/* 3. The URL Search Bar & Dropdown */
+#urlbar-background {
+    background-color: #212e3f !important;
+    border: 1px solid #2b3b51 !important;
+}
+
+#urlbar[focused="true"]>#urlbar-background {
+    border-color: #2b3b51 !important;
+    box-shadow: 0 0 0 1px #2b3b51 !important;
+}
+
+#urlbar-input,
+.urlbar-input-box {
+    color: #cdcecf !important;
+}
+
+.urlbarView,
+.urlbarView-body-inner,
+#urlbar-results,
+.search-one-offs {
+    background-color: #212e3f !important;
+    background: #212e3f !important;
+    color: #cdcecf !important;
+    border-color: #2b3b51 !important;
+}
+
+.urlbarView-row {
+    color: #cdcecf !important;
+}
+
+.urlbarView-row:hover,
+.urlbarView-row[selected] {
+    background-color: #2b3b51 !important;
+}
+
+/* 4. Active & Hover Tabs (Vertical Sidebar Tabs) */
+.tabbrowser-tab:hover .tab-background {
+    background-color: #2b3b51 !important;
+}
+
+.tabbrowser-tab[selected] .tab-background {
+    background-color: #393b44 !important;
+}
+
+.tab-text {
+    color: #cdcecf !important;
+}
+
+/* 5. Buttons and Sidebar Icons */
+toolbarbutton:hover {
+    background-color: #2b3b51 !important;
+    border-radius: 6px !important;
+}
+
+.toolbarbutton-icon,
+.button-icon {
+    fill: #cdcecf !important;
+}
+
+/* 6. Context Menus and Popups */
+menupopup,
+panel,
+tooltip {
+    --panel-background: #212e3f !important;
+    --panel-color: #cdcecf !important;
+    --panel-border-color: #2b3b51 !important;
+    background-color: #212e3f !important;
+    color: #cdcecf !important;
+    border: 1px solid #2b3b51 !important;
+}
+
+menuitem:hover,
+menu:hover {
+    background-color: #2b3b51 !important;
+}
+
+/* 7. Highlight / Text Selection */
+::selection {
+    background-color: #2b3b51 !important;
+    color: #cdcecf !important;
+}

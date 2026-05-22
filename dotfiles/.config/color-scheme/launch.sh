@@ -42,6 +42,7 @@ apply_theme() {
     cp "$THEME_DIR/$selected_theme/quickshell/Colors.qml" "$HOME/.config/quickshell/qubar/Colors.qml"
     cp "$THEME_DIR/$selected_theme/quickshell/Colors.qml" "$HOME/.config/quickshell/OSD/Colors.qml"
     cp "$THEME_DIR/$selected_theme/hyprland/Colors.lua" "$HOME/.config/hypr/Modules/Colors.lua"
+    cp "$THEME_DIR/$selected_theme/zen/$selected_theme.css" "$HOME/.config/zen/rcasz579.Default (release)/chrome/userChrome.css"
 
 
     pkill -USR1 kitty 2>/dev/null || true
@@ -100,7 +101,7 @@ apply_wallpaper() {
 apply_bar() {
     local quickshell_dir="$HOME/.config/quickshell/qubar"
     local quickshell_target="$quickshell_dir/shell.qml"
-    local options="Float\nModern\nN2\nNormal\nPill"
+    local options="Float\nModern\nN2\nNormal\nNotch\nPill\nSimp"
     local choice
     local source_file
 

@@ -1,68 +1,118 @@
 /* =========================================================
-   ONEDARK THEME FOR FIREFOX & ZEN BROWSER (FULL UI COLORS)
+   BRUTE-FORCE ONEDARK THEME FOR ZEN BROWSER
    =========================================================
-   This method safely themes the full UI (tabs, context menus,
-   URL bar, sidebars) without breaking Zen's unique layout.
 */
 
 :root {
-    /* -- Background Colors -- */
-    --lwt-accent-color: #21252b !important; /* Window background (OneDark darker) */
-    --toolbar-bgcolor: #282c34 !important; /* Toolbar background (OneDark main) */
-    --lwt-frame: #21252b !important;
-    --tab-selected-bgcolor: #282c34 !important;
-    --lwt-selected-tab-background-color: #282c34 !important;
-
-    /* -- Text & Foreground Colors -- */
-    --toolbar-color: #abb2bf !important; /* Standard text */
-    --lwt-text-color: #abb2bf !important;
-    --tab-selected-textcolor: #abb2bf !important;
-    --lwt-tab-text: #5c6370 !important; /* Unselected tab text */
-
-    /* -- URL / Search Bar -- */
-    --toolbar-field-background-color: #1e2227 !important;
-    --toolbar-field-color: #abb2bf !important;
-    --toolbar-field-focus-background-color: #282c34 !important;
-    --toolbar-field-focus-color: #abb2bf !important;
-    --toolbar-field-border-color: #3b4048 !important;
-    --toolbar-field-focus-border-color: #61afef !important; /* OneDark blue accent */
-
-    /* -- Context Menus, Popups & Dropdowns -- */
-    --arrowpanel-background: #282c34 !important;
-    --arrowpanel-color: #abb2bf !important;
-    --arrowpanel-border-color: #3b4048 !important;
-    --popup-color: #abb2bf !important;
-    --popup-border-color: #3b4048 !important;
-    --menu-color: #abb2bf !important;
-    --menu-background-color: #282c34 !important;
-    --menu-border-color: #3b4048 !important;
-
-    /* -- Hover & Active Button States -- */
-    --button-hover-bgcolor: #3b4048 !important;
-    --button-active-bgcolor: #2c323c !important;
-    --toolbarbutton-hover-background: #3b4048 !important;
-    --toolbarbutton-active-background: #2c323c !important;
-
-    /* -- Sidebar (Bookmarks, History, Zen vertical tabs) -- */
-    --lwt-sidebar-background-color: #21252b !important;
-    --lwt-sidebar-text-color: #abb2bf !important;
-    --sidebar-background-color: #21252b !important;
-    --sidebar-text-color: #abb2bf !important;
-
-    /* -- Accents -- */
-    --tab-line-color: #61afef !important; /* Active tab indicator */
+    /* 1. Override Zen's Custom Internal Theme Variables */
+    --zen-colors-primary: #5c6370 !important;
+    --zen-colors-bg-dark: #21252b !important;
+    --zen-colors-bg: #282c34 !important;
+    --zen-colors-bg-light: #2c313a !important;
+    --zen-colors-bg-lighter: #3e4451 !important;
+    --zen-colors-border: #3e4451 !important;
+    --zen-colors-fg: #abb2bf !important;
+    --zen-colors-tertiary: #5c6370 !important;
 }
 
-/* Force context menu background colors system-wide inside the browser */
+/* 2. Force Main Backgrounds (Sidebar, Top bar, Toolbars) */
+#main-window,
+#navigator-toolbox,
+#nav-bar,
+#PersonalToolbar,
+#TabsToolbar,
+#sidebar-box,
+#sidebar,
+.zen-sidebar,
+#zen-sidebar-web-panel,
+#zen-sidebar-wrapper,
+#zen-appcontent-wrapper,
+.browserContainer,
+page-action-buttons {
+    background-color: #282c34 !important;
+    background: #282c34 !important;
+    color: #abb2bf !important;
+    border-color: #3e4451 !important;
+}
+
+/* 3. The URL Search Bar & Dropdown */
+#urlbar-background {
+    background-color: #2c313a !important;
+    border: 1px solid #3e4451 !important;
+}
+
+#urlbar[focused="true"]>#urlbar-background {
+    border-color: #3e4451 !important;
+    box-shadow: 0 0 0 1px #3e4451 !important;
+}
+
+#urlbar-input,
+.urlbar-input-box {
+    color: #abb2bf !important;
+}
+
+.urlbarView,
+.urlbarView-body-inner,
+#urlbar-results,
+.search-one-offs {
+    background-color: #2c313a !important;
+    background: #2c313a !important;
+    color: #abb2bf !important;
+    border-color: #3e4451 !important;
+}
+
+.urlbarView-row {
+    color: #abb2bf !important;
+}
+
+.urlbarView-row:hover,
+.urlbarView-row[selected] {
+    background-color: #3e4451 !important;
+}
+
+/* 4. Active & Hover Tabs (Vertical Sidebar Tabs) */
+.tabbrowser-tab:hover .tab-background {
+    background-color: #3e4451 !important;
+}
+
+.tabbrowser-tab[selected] .tab-background {
+    background-color: #4b5263 !important;
+}
+
+.tab-text {
+    color: #abb2bf !important;
+}
+
+/* 5. Buttons and Sidebar Icons */
+toolbarbutton:hover {
+    background-color: #3e4451 !important;
+    border-radius: 6px !important;
+}
+
+.toolbarbutton-icon,
+.button-icon {
+    fill: #abb2bf !important;
+}
+
+/* 6. Context Menus and Popups */
 menupopup,
-panel {
-    --panel-background: #282c34 !important;
+panel,
+tooltip {
+    --panel-background: #2c313a !important;
     --panel-color: #abb2bf !important;
-    --panel-border-color: #3b4048 !important;
+    --panel-border-color: #3e4451 !important;
+    background-color: #2c313a !important;
+    color: #abb2bf !important;
+    border: 1px solid #3e4451 !important;
 }
 
-/* Highlight / Text Selection Color */
+menuitem:hover,
+menu:hover {
+    background-color: #3e4451 !important;
+}
+
+/* 7. Highlight / Text Selection */
 ::selection {
     background-color: #3e4451 !important;
-    color: #ffffff !important;
+    color: #abb2bf !important;
 }
