@@ -7,10 +7,14 @@ return {
         "ibhagwan/fzf-lua",
     },
     config = function()
+        -- 🚨 CRUCIAL: You MUST require lspconfig to load the :LspInfo command
+        -- and to inject community servers (like qmlls) into Neovim 0.12's native API.
+        require("lspconfig")
+
         require("mason").setup()
         require("mason-lspconfig").setup({
-            -- 1. Added rust_analyzer here so Mason installs it automatically
-            ensure_installed = { "lua_ls", "ts_ls", "cssls", "rust_analyzer" },
+            -- ADDED "qmlls" HERE so Mason actually downloads it
+            ensure_installed = { "lua_ls", "ts_ls", "cssls", "rust_analyzer", "qmlls" },
         })
 
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -21,7 +25,7 @@ return {
             capabilities = capabilities,
             settings = {
                 Lua = {
-                    diagnostics = { globals = { "vim", "ags" } }, -- added "ags" global just in case
+                    diagnostics = { globals = { "vim", "ags" } },
                 },
             },
         })
@@ -45,12 +49,19 @@ return {
             settings = {
                 ["rust-analyzer"] = {
                     check = {
-                        command = "clippy", -- The correct new setting
+                        command = "clippy",
                     },
                 },
             },
         })
         vim.lsp.enable("rust_analyzer")
+
+        -- === QML LSP ===
+        vim.lsp.config("qmlls", {
+            capabilities = capabilities,
+            cmd = { "/usr/lib/qt6/bin/qmlls" },
+        })
+        vim.lsp.enable("qmlls")
 
         -- Universal LSP Keybinds (Triggers when an LSP attaches to a buffer)
         vim.api.nvim_create_autocmd("LspAttach", {
