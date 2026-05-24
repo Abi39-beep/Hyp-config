@@ -1,0 +1,12 @@
+/**
+ * Gruvbox Material Dark - Rofi Colors
+ **/
+
+* {
+    background:     #282828AA;
+    background-alt: #32302fFF;
+    foreground:     #d4be98FF;
+    selected:       #e78a4eFF;
+    active:         #e78a4eFF;
+    urgent:         #ea6962FF;
+}
