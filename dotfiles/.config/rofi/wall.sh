@@ -181,7 +181,9 @@ choice=$(list_wallpapers | rofi -dmenu -i -theme-str "$STYLE" -p "Wallpaper:")
 
 # 3️⃣ Apply Wallpaper
 if [ -n "$choice" ]; then
-    swww img "$choice" --transition-type outer --transition-duration 1.5
-    cp "$choice" "$LOCK_IMAGE"
-    notify-send "Wallpaper Changed" "Applied: $(basename "$choice")" -i "$choice"
+    awww img "$choice" --transition-type outer --transition-duration 1.5
+   #cp "$choice" "$LOCK_IMAGE"
+    #notify-send "Wallpaper Changed" "Applied: $(basename "$choice")" -i "$choice"
 fi
+
+
