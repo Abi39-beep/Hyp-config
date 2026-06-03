@@ -23,7 +23,7 @@ apply_theme() {
 
     selected_theme=$(
         find "$THEME_DIR" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort |
-        rofi -dmenu -i -theme "$SWITCHER_THEME" -p " Theme:"
+        rofi -dmenu -i -theme "$SWITCHER_THEME" -p "   :"
     )
     
     [ -n "$selected_theme" ] || return 1
@@ -88,7 +88,7 @@ apply_wallpaper() {
     choice=$(
         for img in "${wallpapers[@]}"; do
             printf '%s\0icon\x1fthumbnail://%s\n' "$img" "$img"
-        done | rofi -dmenu -i -show-icons -theme "$WALLPAPER_THEME" -p "Wallpaper:"
+        done | rofi -dmenu -i -show-icons -theme "$WALLPAPER_THEME" -p "󰥸 :"
     )
 
     [ -n "$choice" ] || return 1
@@ -106,7 +106,7 @@ apply_bar() {
     local source_file
 
     # Show Rofi Menu
-    choice=$(echo -e "$options" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Select Bar:")
+    choice=$(echo -e "$options" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "  :")
 
     # If nothing is selected, exit this function
     [ -n "$choice" ] || return 1
@@ -129,7 +129,7 @@ apply_barlayout() {
     local choice
     local source_file
 
-    choice=$(echo -e "$options" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Select Layout:")
+    choice=$(echo -e "$options" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "  :")
 
     [ -n "$choice" ] || return 1
 
@@ -148,7 +148,7 @@ apply_barlayout() {
 
 # --- MAIN MENU EXECUTION ---
 # Added 'Bar Layout' into the main menu selection
-mode=$(printf "Theme\nWallpaper\nBar Style\nBar Layout" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "Action:")
+mode=$(printf "Theme\nWallpaper\nBar Style\nBar Layout" | rofi -dmenu -i -theme "$SWITCHER_THEME" -p "  :")
 [ -n "$mode" ] || exit 0
 
 case "$mode" in

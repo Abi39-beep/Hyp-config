@@ -10,10 +10,10 @@ configuration {
 
 window {
     width: 1000px;
-    height: 600px;
+    height: 320px;
     border: 2px;
-    border-color: @selected;
-    border-radius: 12px;
+    border-color: @background-alt;
+    border-radius: 15px;
     background-color: @background;
 }
 
@@ -40,14 +40,14 @@ prompt {
 entry {
     background-color: transparent;
     text-color: @foreground;
-    placeholder: "Search...";
+    placeholder: " ";
     placeholder-color: gray;
 }
 
 listview {
     background-color: transparent;
     columns: 4;
-    lines: 2;
+    lines: 1;
     spacing: 15px;
     margin: 0px 20px 20px 20px;
     fixed-columns: false;
@@ -68,7 +68,7 @@ element normal.normal, element alternate.normal {
 }
 
 element selected.normal {
-    background-color: @selected;
+    background-color: @background-alt;
     text-color: @background;
     border-color: @selected;
 }

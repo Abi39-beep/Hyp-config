@@ -110,10 +110,6 @@ element {
     orientation:                 vertical;
     cursor:                      pointer;
 }
-element normal.normal {
-    background-color:            @background;
-    text-color:                  @foreground;
-}
 element selected.normal {
     background-color:            @background-alt;
     text-color:                  @selected;

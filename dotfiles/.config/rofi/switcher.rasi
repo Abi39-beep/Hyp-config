@@ -7,6 +7,7 @@ configuration {
 /*****----- Global Variables -----*****/
 /* This imports the color.rasi file that your script updates */
 @import "color.rasi"
+@import "font.rasi"
 
 /*****----- Main Window -----*****/
 window {
@@ -23,7 +24,7 @@ window {
     padding:                     0px;
     border:                      2px solid;
     border-radius:               15px; /* Rounded corners */
-    border-color:                @selected;
+    border-color:                @background-alt;
     background-color:            @background;
     cursor:                      "default";
 }
@@ -57,7 +58,7 @@ entry {
     background-color:            transparent;
     text-color:                  inherit;
     cursor:                      text;
-    placeholder:                 "Search...";
+    placeholder:                 " ";
     placeholder-color:           inherit;
 }
 
@@ -92,8 +93,8 @@ element {
 }
 
 element selected.normal {
-    background-color:            @selected;
-    text-color:                  @background;
+    background-color:            @background-alt;
+    text-color:                  @selected;
 }
 
 element-text {
