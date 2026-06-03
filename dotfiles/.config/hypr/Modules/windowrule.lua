@@ -58,6 +58,12 @@ hl.window_rule({
     opaque = true,
 })
 
+--Zen browser
+hl.window_rule({
+    match = { class = "^(zen)$" },
+    opaque = true,
+})
+
 -- Onlyoffice
 hl.window_rule({
     match  = { class = "^(ONLYOFFICE)$" },
@@ -117,6 +123,7 @@ hl.layer_rule({
     match        = { namespace = "^(rofi)$" },
     blur         = true,
     ignore_alpha = 0,
+    animation    = "slide bottom"
 })
 
 -- Logout Dialog
@@ -174,4 +181,10 @@ hl.layer_rule({
     match = { namespace = "^(pill)$" },
     blur = true,
     ignore_alpha = 0.5,
+})
+
+hl.layer_rule({
+    match = { namespace = "^(simp)$" },
+    blur = true,
+    ignore_alpha = 0,
 })
