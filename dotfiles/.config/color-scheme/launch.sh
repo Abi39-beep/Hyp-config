@@ -44,6 +44,51 @@ apply_theme() {
     cp "$THEME_DIR/$selected_theme/hyprland/Colors.lua" "$HOME/.config/hypr/Modules/Colors.lua"
     cp "$THEME_DIR/$selected_theme/zen/$selected_theme.css" "$HOME/.config/zen/rcasz579.Default (release)/chrome/userChrome.css"
 
+# --- SPICETIFY INTEGRATION ---
+    local spicetify_tracker="$THEME_DIR/$selected_theme/spotify/spicetify.txt"
+    local spice_theme=""
+    local spice_scheme=""
+    local spice_config=()
+
+    if [ -f "$spicetify_tracker" ]; then
+        # Read the file line by line (stripping any accidental carriage returns)
+        mapfile -t spice_config < <(tr -d '\r' < "$spicetify_tracker")
+        
+        spice_theme="${spice_config[0]:-}"  # Line 1: Theme
+        spice_scheme="${spice_config[1]:-}" # Line 2: Scheme (Optional)
+
+        if command -v spicetify >/dev/null 2>&1 && [ -n "$spice_theme" ]; then
+            if [ -d "$HOME/.config/spicetify/Themes/$spice_theme" ]; then
+                
+                # Wrap everything in a background subshell so Rofi closes instantly
+                (
+                    # 1. Set the main theme
+                    spicetify config current_theme "$spice_theme"
+                    
+                    # 2. Set or clear the sub-scheme
+                    if [ -n "$spice_scheme" ]; then
+                        spicetify config color_scheme "$spice_scheme"
+                    else
+                        spicetify config color_scheme ""
+                    fi
+                    
+                    # 3. Apply the theme and handle Spotify's state
+                    if pgrep -x spotify >/dev/null; then
+                        # Spotify IS running: Apply quietly, then manually restart it
+                        spicetify apply -n >/dev/null 2>&1
+                        pkill -x spotify
+                        sleep 0.5 # Give it a half-second to fully close
+                        spotify >/dev/null 2>&1 &
+                    else
+                        # Spotify is NOT running: Just apply quietly
+                        spicetify apply -n >/dev/null 2>&1
+                    fi
+                ) & disown
+                
+            fi
+        fi
+    fi
+    # -----------------------------
 
     pkill -USR1 kitty 2>/dev/null || true
     hyprctl reload
