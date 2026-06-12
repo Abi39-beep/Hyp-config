@@ -114,6 +114,12 @@ hl.window_rule({
     center = true,
 })
 
+-- Spotify
+hl.window_rule {
+    match = { class = "^(Spotify)$" },
+    workspace = "5",
+}
+
 --------------------------------
 ---------- LAYER RULES ---------
 --------------------------------
@@ -135,16 +141,16 @@ hl.layer_rule({
 -- Quickshell OSD layer_rule
 hl.layer_rule({
     match = { namespace = "^(leftosd)$" },
-    blur = true,
-    ignore_alpha = 0,
+    --  blur = true,
+    --  ignore_alpha = 0,
     animation = "slide left"
 })
 
-hl.layer_rule({
-    match = { namespace = "^(rightosd)$" },
-    blur = true,
-    ignore_alpha = 0,
-})
+--hl.layer_rule({
+--  match = { namespace = "^(rightosd)$" },
+--  blur = true,
+--  ignore_alpha = 0,
+--})
 
 hl.layer_rule({
     match = { namespace = "^(bottomosd)$" },

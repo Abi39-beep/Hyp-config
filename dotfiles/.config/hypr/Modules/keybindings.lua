@@ -5,14 +5,14 @@
 -- Set programs that you use
 local terminal    = "kitty"
 local fileManager = "thunar"
-local menu        = os.getenv("HOME") .. "/.config/rofi/launchers/type-1/launcher.sh"
-local browser     = "firefox"
-local wall        = os.getenv("HOME") .. "/.config/rofi/wall.sh"
+local menu        = os.getenv("HOME") .. "/.config/rofi/launchers/type-2/launcher.sh"
+local browser     = "zen-browser"
 local barlayout   = os.getenv("HOME") .. "/.config/color-scheme/barlayout.sh"
 local colorLaunch = os.getenv("HOME") .. "/.config/color-scheme/launch.sh"
 local quickReload = os.getenv("HOME") .. "/.config/quickshell/reload.sh"
 local wallCycle   = os.getenv("HOME") .. "/.config/color-scheme/wall-cycle.sh"
 local hyprlock    = os.getenv("HOME") .. "/.config/hypr/hyprlock.sh"
+local rustbar     = os.getenv("HOME") .. "/Projects/my_rust_bar/reload.sh"
 local shutdown    = "shutdown -h now"
 
 ---------------------
@@ -29,17 +29,23 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(menu))
 --hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle only
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(barlayout))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(colorLaunch))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(quickReload))
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(rustbar))
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("foot"))
 hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("galculator"))
 hl.bind(mainMod .. " + X", hl.dsp.global("quickshell:powermenu"))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(wallCycle))
 hl.bind(mainMod .. " + I", hl.dsp.exec_cmd("quickshell -c OSD ipc call osd toggleRight"))
 hl.bind(mainMod .. " + U", hl.dsp.exec_cmd("quickshell -c OSD ipc call osd toggleLeft"))
+
+-- Quickshell Tact
+hl.bind("ALT + T", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleTime"))
+hl.bind("ALT + M", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleMedia"))
+hl.bind("ALT + ESCAPE", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill closePill"))
+hl.bind("ALT + X", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill togglePowerMenu"))
 
 -- Scrolling Layout
 hl.bind(mainMod .. " + period", hl.dsp.layout("swapcol r"))
@@ -50,7 +56,7 @@ hl.bind(mainMod .. " + N", hl.dsp.layout("colresize +conf"))
 hl.bind(mainMod .. " + P", hl.dsp.layout("colresize -conf"))
 
 --SHIFT region
-hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m window"))
+hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m output"))
 hl.bind("SHIFT + PRINT", hl.dsp.exec_cmd("hyprshot -m region"))
 hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd(hyprlock))
 hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("sleep 0.5 && systemctl suspend"))
