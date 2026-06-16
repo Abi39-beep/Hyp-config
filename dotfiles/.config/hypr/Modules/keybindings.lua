@@ -43,9 +43,11 @@ hl.bind(mainMod .. " + U", hl.dsp.exec_cmd("quickshell -c OSD ipc call osd toggl
 
 -- Quickshell Tact
 hl.bind("ALT + T", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleTime"))
-hl.bind("ALT + M", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleMedia"))
+hl.bind("ALT + A", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleMedia"))
 hl.bind("ALT + ESCAPE", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill closePill"))
 hl.bind("ALT + X", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill togglePowerMenu"))
+hl.bind("ALT + D", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleLauncher"))
+hl.bind("ALT + C", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleControlCenter"))
 
 -- Scrolling Layout
 hl.bind(mainMod .. " + period", hl.dsp.layout("swapcol r"))
