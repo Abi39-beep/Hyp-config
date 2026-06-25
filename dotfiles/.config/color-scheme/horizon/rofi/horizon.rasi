@@ -1,0 +1,12 @@
+/**
+ * Horizon - Rofi Colors
+ **/
+
+* {
+    background:     #1C1E26AA;
+    background-alt: #232530FF;
+    foreground:     #D5D8DAFF;
+    selected:       #26BBD9FF;
+    active:         #29D398FF;
+    urgent:         #E95678FF;
+}

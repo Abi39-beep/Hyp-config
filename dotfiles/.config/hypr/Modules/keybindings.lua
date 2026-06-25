@@ -12,7 +12,7 @@ local colorLaunch = os.getenv("HOME") .. "/.config/color-scheme/launch.sh"
 local quickReload = os.getenv("HOME") .. "/.config/quickshell/reload.sh"
 local wallCycle   = os.getenv("HOME") .. "/.config/color-scheme/wall-cycle.sh"
 local hyprlock    = os.getenv("HOME") .. "/.config/hypr/hyprlock.sh"
-local rustbar     = os.getenv("HOME") .. "/Projects/my_rust_bar/reload.sh"
+local newbar      = os.getenv("HOME") .. "/.config/quickshell/new/reload.sh"
 local shutdown    = "shutdown -h now"
 
 ---------------------
@@ -33,7 +33,7 @@ hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(barlayout))
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(colorLaunch))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(quickReload))
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(rustbar))
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(newbar))
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("foot"))
 hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("galculator"))
 hl.bind(mainMod .. " + X", hl.dsp.global("quickshell:powermenu"))
@@ -42,12 +42,15 @@ hl.bind(mainMod .. " + I", hl.dsp.exec_cmd("quickshell -c OSD ipc call osd toggl
 hl.bind(mainMod .. " + U", hl.dsp.exec_cmd("quickshell -c OSD ipc call osd toggleLeft"))
 
 -- Quickshell Tact
-hl.bind("ALT + T", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleTime"))
+hl.bind("ALT + S", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleTime"))
 hl.bind("ALT + A", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleMedia"))
 hl.bind("ALT + ESCAPE", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill closePill"))
 hl.bind("ALT + X", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill togglePowerMenu"))
 hl.bind("ALT + D", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleLauncher"))
 hl.bind("ALT + C", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleControlCenter"))
+hl.bind("ALT + I", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleSettings"))
+hl.bind("ALT + T", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleTheme"))
+hl.bind("ALT + W", hl.dsp.exec_cmd("qs -c tact ipc call mediaPill toggleWallpaper"))
 
 -- Scrolling Layout
 hl.bind(mainMod .. " + period", hl.dsp.layout("swapcol r"))

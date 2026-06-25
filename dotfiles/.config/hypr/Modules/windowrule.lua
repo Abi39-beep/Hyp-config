@@ -1,4 +1,4 @@
---------------------------------
+-------------------------------
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------
 
@@ -107,6 +107,12 @@ hl.window_rule({
     opaque = true,
 })
 
+--Zed
+hl.window_rule({
+    match  = { class = "^(dev.zed.Zed)$" },
+    opaque = true,
+})
+
 -- Galculator
 hl.window_rule({
     match  = { class = "^(galculator)$" },
@@ -118,6 +124,7 @@ hl.window_rule({
 hl.window_rule {
     match = { class = "^(Spotify)$" },
     workspace = "5",
+    opaque = true,
 }
 
 --------------------------------

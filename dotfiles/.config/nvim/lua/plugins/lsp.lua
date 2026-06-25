@@ -59,7 +59,18 @@ return {
         -- === QML LSP ===
         vim.lsp.config("qmlls", {
             capabilities = capabilities,
-            cmd = { "/usr/lib/qt6/bin/qmlls" },
+            -- Add the '-I' flag to tell it where Arch Linux stores QML modules!
+            cmd = {
+                "/usr/lib/qt6/bin/qmlls",
+                "-I", "/usr/lib/qt6/qml"
+            },
+            on_init = function(client)
+                client.server_capabilities.semanticTokensProvider = nil
+            end,
+            handlers = {
+                ["textDocument/semanticTokens/full"] = function() end,
+                ["textDocument/semanticTokens/full/delta"] = function() end,
+            },
         })
         vim.lsp.enable("qmlls")
 
