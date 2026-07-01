@@ -1,0 +1,48 @@
+Objective: Resolve the 25+ second startup latency for Firefox/Zen-based browsers on Hyprland.
+
+Summary of Changes:
+
+    D-Bus Activation: 
+    Added missing environment variables to the Hyprland autostart sequence to prevent the browser from waiting for a D-Bus timeout.
+
+    Hostname Resolution: 
+    Updated /etc/hosts to explicitly map the system hostname (archlinux) to the loopback interface (127.0.0.1), preventing network-based DNS timeouts.
+
+    Proxy Stabilization: 
+    Disabled "Auto-detect proxy" settings within the browser to prevent WPAD (Web Proxy Auto-Discovery) lookup timeouts.
+
+    Environment Variables: 
+    Implemented native Wayland support (MOZ_ENABLE_WAYLAND=1) and disabled accessibility bridge (NO_AT_BRIDGE=1) to remove dependency bottlenecks during initial startup.
+
+Configuration Files & Locations:
+
+    Hyprland Autostart (~/.config/hypr/Modules/autostart.lua):
+
+        Action: Updated the hl.on("hyprland.start", ...) block to include a synchronized restart and environment import for D-Bus.
+
+        Command Used: 
+        hl.exec_cmd("bash -c 'systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP; 
+        dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP; 
+        killall xdg-desktop-portal-hyprland xdg-desktop-portal-gtk xdg-desktop-portal'")
+
+    Environment Variables (~/.config/hypr/Modules/env.lua):
+
+        Action: Explicitly set browser-specific environment variables for native Wayland support.
+
+        Additions:
+
+            hl.env("MOZ_ENABLE_WAYLAND", "1")
+
+            hl.env("NO_AT_BRIDGE", "1")
+
+    System Hosts (/etc/hosts):
+
+        Action: Ensured the local hostname matches the loopback address.
+
+        Entry: 127.0.0.1 localhost archlinux
+
+    Browser Settings (about:config):
+
+        Action: Disabled reliance on portal-based settings to avoid initialization hangs.
+
+        Variables: Set widget.use-xdg-desktop-portal.settings and widget.use-xdg-desktop-portal.mime-handler to 0.

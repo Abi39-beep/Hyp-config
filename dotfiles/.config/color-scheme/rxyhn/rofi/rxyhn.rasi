@@ -1,0 +1,12 @@
+/**
+ * Rxyhn Earthy Pine - Rofi Colors
+ **/
+
+* {
+    background:     #012423AA;
+    background-alt: #023432FF;
+    foreground:     #FBD5AEFF;
+    selected:       #5EA89AFF;
+    active:         #90B640FF;
+    urgent:         #D4493FFF;
+}

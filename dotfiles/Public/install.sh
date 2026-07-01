@@ -28,12 +28,7 @@ echo "Installing AUR packages (requires yay)..."
 yay -S --needed --noconfirm \
     paper-icon-theme-git \
     hyprshot-git [web:7][web:11]
-    adw-gimp3-git 
-    nmgui-bin 
-    overskride-bin 
-    pixie-sddm-git 
-    quickshell-git
-    ttf-rubik-vf
+
 echo "Installation complete!"
 echo "Refresh fonts: fc-cache -fv"
 echo "Re-login or restart Hyprland to apply icons/fonts."

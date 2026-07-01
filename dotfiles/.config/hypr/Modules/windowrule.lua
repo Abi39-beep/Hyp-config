@@ -54,19 +54,7 @@ hl.window_rule({
 
 --Firefox
 hl.window_rule({
-    match = { class = "^(firefox)$" },
-    opaque = true,
-})
-
---Zen browser
-hl.window_rule({
-    match = { class = "^(zen)$" },
-    opaque = true,
-})
-
--- Onlyoffice
-hl.window_rule({
-    match  = { class = "^(ONLYOFFICE)$" },
+    match = { class = "^(firefox|zen|ONLYOFFICE|org.gnome.Papers|org.freecad.FreeCAD|org.xfce.ristretto|io.github.celluloid_player.Celluloid|dev.zed.Zed)$" },
     opaque = true,
 })
 
@@ -81,36 +69,6 @@ hl.window_rule({
     match  = { class = "^(thunar)$", title = "^(.*Rename.*)$" },
     float  = true,
     center = true,
-})
-
--- Papers Document-viewer
-hl.window_rule({
-    match  = { class = "^(org.gnome.Papers)$" },
-    opaque = true,
-})
-
--- FreeCAD
-hl.window_rule({
-    match  = { class = "^(org.freecad.FreeCAD)$" },
-    opaque = true,
-})
-
---Ristretto
-hl.window_rule({
-    match  = { class = "^(org.xfce.ristretto)$" },
-    opaque = true,
-})
-
---Celluloid
-hl.window_rule({
-    match  = { class = "^(io.github.celluloid_player.Celluloid)$" },
-    opaque = true,
-})
-
---Zed
-hl.window_rule({
-    match  = { class = "^(dev.zed.Zed)$" },
-    opaque = true,
 })
 
 -- Galculator
@@ -200,4 +158,9 @@ hl.layer_rule({
     match = { namespace = "^(simp)$" },
     blur = true,
     ignore_alpha = 0,
+})
+
+hl.layer_rule({
+    match = { namespace = "^(app_launcher|control_center)$" },
+    no_anim = true,
 })

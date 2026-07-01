@@ -1,0 +1,12 @@
+/**
+ * Rosé Pine - Rofi Colors
+ **/
+
+* {
+    background:     #191724AA;
+    background-alt: #1f1d2eFF;
+    foreground:     #e0def4FF;
+    selected:       #c4a7e7FF;
+    active:         #ebbcbaFF;
+    urgent:         #eb6f92FF;
+}

@@ -25,5 +25,8 @@ hl.env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
 hl.env("QT_QPA_PLATFORMTHEME", "qt5ct")
 hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 
+--Browser
+hl.env("MOZ_ENABLE_WAYLAND", "1")
+
 --Hyprshot
 hl.env("HYPRSHOT_DIR", "Pictures")

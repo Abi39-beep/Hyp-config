@@ -10,6 +10,8 @@ fi
 # Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
+export EDITOR='nvim'
+
 # Add in zsh plugins
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
@@ -64,10 +66,21 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 alias ls='ls -l --color'
 alias vim='nvim'
 alias c='clear'
+alias ls='eza -l --icons'
+alias cat='bat'
+alias Syu='yay -Syu'
+alias i='yay -S'
+alias s='yay -Ss'
+alias rns='yay -Rns'
+alias uz='unzip'
+alias f='fastfetch'
+alias y='yazi'
+alias qs='quickshell'
 
 # Shell integrations
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 
 #SSH Agent
-export SSH_AUTH_SOCK=/home/abimanyu/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock
+export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
+
