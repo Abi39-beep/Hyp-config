@@ -8,7 +8,7 @@
 -- Or execute your favorite apps at launch like this:
 --
 hl.on("hyprland.start", function()
-    hl.exec_cmd("awww-daemon")
+    --    hl.exec_cmd("awww-daemon")
     hl.exec_cmd("hypridle")
     hl.exec_cmd("udiskie")
     hl.exec_cmd("wl-paste --type text --watch cliphist store")
@@ -17,5 +17,6 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("/home/abimanyu/.config/quickshell/reload.sh")
     hl.exec_cmd(
         "bash -c 'systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP; dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP; killall xdg-desktop-portal-hyprland xdg-desktop-portal-gtk xdg-desktop-portal'")
-    --    hl.exec_cmd("quickshell -c ~/.config/quickshell/wallpaper")
+    hl.exec_cmd("quickshell -c ~/.config/quickshell/wallpaper")
+    hl.exec_cmd("quickshell -c ~/.config/quickshell/syslock")
 end)

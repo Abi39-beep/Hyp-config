@@ -161,6 +161,6 @@ hl.layer_rule({
 })
 
 hl.layer_rule({
-    match = { namespace = "^(app_launcher|control_center)$" },
+    match = { namespace = "^(app_launcher|control_center|desktop_wallpaper)$" },
     no_anim = true,
 })

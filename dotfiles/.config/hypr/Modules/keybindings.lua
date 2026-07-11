@@ -7,7 +7,6 @@ local terminal    = "kitty"
 local fileManager = "thunar"
 local menu        = os.getenv("HOME") .. "/.config/rofi/launchers/type-2/launcher.sh"
 local browser     = "zen-browser"
-local barlayout   = os.getenv("HOME") .. "/.config/color-scheme/barlayout.sh"
 local colorLaunch = os.getenv("HOME") .. "/.config/color-scheme/launch.sh"
 local quickReload = os.getenv("HOME") .. "/.config/quickshell/reload.sh"
 local wallCycle   = os.getenv("HOME") .. "/.config/color-scheme/wall-cycle.sh"
@@ -27,32 +26,27 @@ local closeWindowBind = hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(menu))
---hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
-hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(barlayout))
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(colorLaunch))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(quickReload))
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(newbar))
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("foot"))
-hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("galculator"))
-hl.bind(mainMod .. " + X", hl.dsp.global("quickshell:powermenu"))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(wallCycle))
-hl.bind(mainMod .. " + I", hl.dsp.exec_cmd("quickshell -c OSD ipc call osd toggleRight"))
-hl.bind(mainMod .. " + U", hl.dsp.exec_cmd("quickshell -c OSD ipc call osd toggleLeft"))
+hl.bind("ALT + I", hl.dsp.exec_cmd("quickshell -c OSD ipc call osd toggleRight"))
+hl.bind("ALT + U", hl.dsp.exec_cmd("quickshell -c OSD ipc call osd toggleLeft"))
+hl.bind("ALT + D", hl.dsp.exec_cmd(menu))
+hl.bind("ALT + A", hl.dsp.exec_cmd(newbar))
+hl.bind("ALT + T", hl.dsp.exec_cmd(colorLaunch))
 
 -- Quickshell Tact
-hl.bind("ALT + S", hl.dsp.exec_cmd("qs -c tact ipc call bar toggleTime"))
-hl.bind("ALT + A", hl.dsp.exec_cmd("qs -c tact ipc call bar toggleMedia"))
-hl.bind("ALT + ESCAPE", hl.dsp.exec_cmd("qs -c tact ipc call bar closePill"))
-hl.bind("ALT + X", hl.dsp.exec_cmd("qs -c tact ipc call bar togglePowerMenu"))
-hl.bind("ALT + D", hl.dsp.exec_cmd("qs -c tact ipc call bar toggleLauncher"))
-hl.bind("ALT + C", hl.dsp.exec_cmd("qs -c tact ipc call bar toggleControlCenter"))
-hl.bind("ALT + I", hl.dsp.exec_cmd("qs -c tact ipc call bar toggleSettings"))
-hl.bind("ALT + T", hl.dsp.exec_cmd("qs -c tact ipc call bar toggleTheme"))
-hl.bind("ALT + W", hl.dsp.exec_cmd("qs -c tact ipc call bar toggleWallpaper"))
-hl.bind("ALT + S", hl.dsp.global("quickshell:toggle_launcher"))
-hl.bind("ALT + Q", hl.dsp.global("quickshell:close_all"))
+hl.bind(mainMod .. " + D", hl.dsp.global("quickshell:toggle_launcher"))
+hl.bind(mainMod .. " + M", hl.dsp.global("quickshell:toggle_time"))
+hl.bind(mainMod .. " + A", hl.dsp.global("quickshell:toggle_media"))
+hl.bind(mainMod .. " + U", hl.dsp.global("quickshell:toggle_settings_menu"))
+hl.bind(mainMod .. " + T", hl.dsp.global("quickshell:toggle_theme_menu"))
+hl.bind(mainMod .. " + W", hl.dsp.global("quickshell:toggle_wallpaper_menu"))
+hl.bind(mainMod .. " + C", hl.dsp.global("quickshell:toggle_control_center"))
+hl.bind(mainMod .. " + X", hl.dsp.global("quickshell:toggle_power_menu"))
+hl.bind(mainMod .. " + ESCAPE", hl.dsp.global("quickshell:close_all"))
+hl.bind(mainMod .. " + G", hl.dsp.global("quickshell:toggle_bar_menu"))
 
 -- Scrolling Layout
 hl.bind(mainMod .. " + period", hl.dsp.layout("swapcol r"))
@@ -65,7 +59,7 @@ hl.bind(mainMod .. " + P", hl.dsp.layout("colresize -conf"))
 --SHIFT region
 hl.bind("PRINT", hl.dsp.exec_cmd("hyprshot -m output"))
 hl.bind("SHIFT + PRINT", hl.dsp.exec_cmd("hyprshot -m region"))
-hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd(hyprlock))
+hl.bind(mainMod .. " + SHIFT + L", hl.dsp.exec_cmd("quickshell -c syslock ipc call syslock lock"))
 hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("sleep 0.5 && systemctl suspend"))
 hl.bind(mainMod .. " + SHIFT + K", hl.dsp.exec_cmd(shutdown))
 hl.bind(mainMod .. " + SHIFT + M",

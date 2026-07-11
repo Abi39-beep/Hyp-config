@@ -1,4 +1,4 @@
 return {
-    bg4 = "#7c6f64",
-    grey2 = "#ebdbb2",
+    bg4 = "#1d3631",
+    grey2 = "#c4b09a",
 }
