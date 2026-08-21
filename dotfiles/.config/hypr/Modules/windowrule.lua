@@ -54,7 +54,7 @@ hl.window_rule({
 
 --Firefox
 hl.window_rule({
-    match = { class = "^(firefox|zen|ONLYOFFICE|org.gnome.Papers|org.freecad.FreeCAD|org.xfce.ristretto|io.github.celluloid_player.Celluloid|dev.zed.Zed)$" },
+    match = { class = "^(firefox|zen|ONLYOFFICE|org.gnome.Papers|org.freecad.FreeCAD|org.xfce.ristretto|io.github.celluloid_player.Celluloid)$" },
     opaque = true,
 })
 
@@ -83,6 +83,13 @@ hl.window_rule {
     match = { class = "^(Spotify)$" },
     workspace = "5",
     opaque = true,
+}
+
+--ss-billing
+hl.window_rule {
+    match = { class = "^(xdg-desktop-portal-gtk)$" },
+    float = true,
+    center = true,
 }
 
 --------------------------------
@@ -155,7 +162,7 @@ hl.layer_rule({
 })
 
 hl.layer_rule({
-    match = { namespace = "^(simp)$" },
+    match = { namespace = "^(simp|unified)$" },
     blur = true,
     ignore_alpha = 0,
 })

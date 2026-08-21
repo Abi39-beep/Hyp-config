@@ -10,8 +10,8 @@ local browser     = "zen-browser"
 local colorLaunch = os.getenv("HOME") .. "/.config/color-scheme/launch.sh"
 local quickReload = os.getenv("HOME") .. "/.config/quickshell/reload.sh"
 local wallCycle   = os.getenv("HOME") .. "/.config/color-scheme/wall-cycle.sh"
-local hyprlock    = os.getenv("HOME") .. "/.config/hypr/hyprlock.sh"
-local newbar      = os.getenv("HOME") .. "/.config/quickshell/new/reload.sh"
+local billing     = os.getenv("HOME") .. "/ss-billing/src-tauri/target/debug/ss-billing"
+local newbar      = os.getenv("HOME") .. "/Playground/noesis-shell/reload.sh"
 local shutdown    = "shutdown -h now"
 
 ---------------------
@@ -29,6 +29,7 @@ hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(quickReload))
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("foot"))
+hl.bind(mainMod .. " + I", hl.dsp.exec_cmd(billing))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(wallCycle))
 hl.bind("ALT + I", hl.dsp.exec_cmd("quickshell -c OSD ipc call osd toggleRight"))
 hl.bind("ALT + U", hl.dsp.exec_cmd("quickshell -c OSD ipc call osd toggleLeft"))
